@@ -24,7 +24,7 @@ function wp_enqueue_less($stylesheet) {
 }
 
 
-function the_content_from($page_id, $filter = true) {
+function the_content_from($page_id, $suppress_filters = false) {
 	if (is_numeric($page_id)) {
 		$post = get_page($page_id);
 	}
@@ -32,9 +32,9 @@ function the_content_from($page_id, $filter = true) {
 		$post = get_page_by_title($page_id);
 	}
 	if ($post) {
-		echo $filter
-			? apply_filters("the_content", $post->post_content)
-			: $post->post_content;
+		echo $suppress_filters
+			? $post->post_content,
+			: apply_filters("the_content", $post->post_content);
 	}
 }
 
