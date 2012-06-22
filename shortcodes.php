@@ -2,8 +2,9 @@
 
 function wpenlighten_camelcase_shortcode_args($args) {
 	$attrs = array();
+	$callback = create_function('$c', 'return strtoupper($c[1]);');
 	foreach ($args as $key => $value) {
-		$key = preg_replace_callback('/_([a-z])/', create_function('$c', 'return strtoupper($c[1]);'), $key);
+		$key = preg_replace_callback('/_([a-z])/', $callback, $key);
 		if ($value === "true") $value = true;
 		elseif ($value === "false") $value = false;
 		elseif ($value === "null") $value = null;
