@@ -24,4 +24,4 @@ __the_post_thumbnail_src($size = 'full', $background_image = false, $multi_post_
 
 
 
-~Current Version:0.1~
+~Current Version:0.1.1~
