@@ -47,6 +47,7 @@ function get_template_part_for($slug, $args) {
 }
 
 function display_posts($args, $callback, array $callback_args = array()) {
+	$original_post = $GLOBALS['post'];
 	if (is_array($args)) {
 		foreach (get_posts($args) as $post) {
 			setup_postdata($GLOBALS['post'] = $post);
