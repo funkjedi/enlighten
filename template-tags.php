@@ -39,20 +39,22 @@ function the_content_from($page_id, $filter = true) {
 }
 
 function get_template_part_for($args, $slug, $name = "") {
+	display_posts($args, 'get_template_part', array($slug, $name));
+}
+
+function display_posts($args, $callback, array $callback_args = array()) {
 	if (is_array($args)) {
 		foreach (get_posts($args) as $post) {
 			setup_postdata($GLOBALS['post'] = $post);
-			get_template_part($slug, $name);
-			do_action('get_template_part_using', $post->ID);
+			call_user_func_array($callback, $callback_args);
+			do_action('display_posts', $post->ID);
 		}
 	}
 	else {
-		$post = is_numeric($args)
-			? get_page($args)
-			: get_page_by_title($args);
+		$post = is_numeric($args) ? get_page($args) : get_page_by_title($args);
 		setup_postdata($GLOBALS['post'] = $post);
-		get_template_part($slug, $name);
-		do_action('get_template_part_using', $post->ID);
+		call_user_func_array($callback, $callback_args);
+		do_action('display_posts', $post->ID);
 	}
 	// instead of using wp_reset_postdata() we reinstate the original $post;
 	setup_postdata($GLOBALS['post'] = $original_post);
