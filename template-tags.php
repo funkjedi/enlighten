@@ -38,7 +38,11 @@ function the_content_from($page_id, $filter = true) {
 	}
 }
 
-function get_template_part_for($args, $slug, $name = "") {
+function get_template_part_for($slug, $args) {
+	$name = "";
+	if (func_num_args() > 2) {
+		list($slug, $name, $args) = func_get_args();
+	}
 	display_posts($args, 'get_template_part', array($slug, $name));
 }
 
