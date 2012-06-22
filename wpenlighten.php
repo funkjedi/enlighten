@@ -33,7 +33,7 @@ function wpenlighten_github_updater() {
 			'sslverify'          => true,
 			'requires'           => '3.0',
 			'tested'             => '3.4',
-			'readme'             => 'READMEN.md'
+			'readme'             => 'README.md'
 		);
 		new WPGitHubUpdater($config);
 	}
