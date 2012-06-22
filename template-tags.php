@@ -33,7 +33,7 @@ function the_content_from($page_id, $suppress_filters = false) {
 	}
 	if ($post) {
 		echo $suppress_filters
-			? $post->post_content,
+			? $post->post_content
 			: apply_filters("the_content", $post->post_content);
 	}
 }
