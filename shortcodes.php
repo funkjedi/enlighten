@@ -1,5 +1,8 @@
 <?php
 
+require dirname(__FILE__) . '/vendor/twig/bootstrap.php';
+
+
 function wpenlighten_camelcase_shortcode_args($args) {
 	$attrs = array();
 	$callback = create_function('$c', 'return strtoupper($c[1]);');
@@ -17,19 +20,28 @@ function wpenlighten_camelcase_shortcode_args($args) {
 
 add_shortcode('content_from','shortcode__content_from');
 function shortcode__content_from($atts) {
-  extract(shortcode_atts(array('page' => 0), $atts));
-  ob_start();
-  the_content_from($page);
-  return ob_get_clean();
+	extract(shortcode_atts(array('page' => 0), $atts));
+	ob_start();
+	the_content_from($page);
+	return ob_get_clean();
 }
 
 add_shortcode('get_template_part','shortcode__get_template_part');
 function shortcode__get_template_part($atts) {
-  extract(shortcode_atts(array('slug' => '', 'name' => ''), $atts));
-  ob_start();
-  get_template_part($slug, $name);
-  return ob_get_clean();
+	extract(shortcode_atts(array('slug' => '', 'name' => ''), $atts));
+	ob_start();
+	get_template_part($slug, $name);
+	return ob_get_clean();
 }
+
+add_shortcode('display_posts','shortcode__display_posts');
+function shortcode__display_posts($atts) {
+	extract(shortcode_atts(array('where' => '', 'using' => ''), $atts));
+	ob_start();
+	display_posts(wp_parse_args($where), 'get_template_part', array($using));
+	return ob_get_clean();
+}
+
 
 
 add_filter('the_content', 'the_content_shortcode__flexslider', 6);
