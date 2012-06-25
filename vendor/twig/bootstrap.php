@@ -26,7 +26,7 @@ function wpenlighten_render_twig($content, $context = array()) {
 		$twig = new Twig_Environment(new Twig_Loader_String(), array('cache' => false));
 		$twig->registerUndefinedFilterCallback('_wpenlighten_twitUndefinedFilterCallback');
 		$twig->registerUndefinedFunctionCallback('_wpenlighten_twitUndefinedFunctionCallback');
-		$twig->addGlobal('wp', new WPEnlightenTwigProxy())
+		$twig->addGlobal('wp', new WPEnlightenTwigProxy());
 	}
 
 	$template = $twig->loadTemplate($content);
