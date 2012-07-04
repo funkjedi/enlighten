@@ -105,7 +105,7 @@ function has_post_thumbnail_src($multi_post_thumbnail = '') {
 }
 
 function the_post_thumbnail_src($size = 'full', $background_image = false, $multi_post_thumbnail = '') {
-	if ($image = wp_get_attachment_image_src(has_post_thumbnail_for($multi_post_thumbnail), $size)) {
+	if ($image = wp_get_attachment_image_src(has_post_thumbnail_src($multi_post_thumbnail), $size)) {
 		echo $background_image ? "background-image: url({$image[0]});" : $image[0];
 	}
 }
