@@ -14,7 +14,7 @@ __get_template_part_for($slug, [$name = '',] $args)__
 
 __display_posts($args, $callback, $callback_args = array())__
 
-__the_loops($loopID, $args = null, $template = null)__
+__the_loop([$args = null], [$query = true])__
 
 __add_post_thumbnail($name, $id, $post_types = array('page', 'post'))__
 
@@ -24,4 +24,4 @@ __the_post_thumbnail_src($size = 'full', $background_image = false, $multi_post_
 
 
 
-~Current Version:0.1.1~
+~Current Version:0.1.2~
