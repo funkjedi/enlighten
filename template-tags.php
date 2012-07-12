@@ -65,20 +65,41 @@ function display_posts($args, $callback, array $callback_args = array()) {
 	setup_postdata($GLOBALS['post'] = $original_post);
 }
 
-
-function the_loops($loopID, $args = null, $template = null) {
-	if (function_exists('tl_get_loop_parameters')) {
-		if (isset($args['template'])) {
-			$template = $args['template']; unset($args['template']);
+class Faux_Loop {
+	function __construct($posts) {
+		$this->posts = $posts;
+		$this->post_count = count($posts);
+		$this->current_post = -1;
+		$this->original_post = $GLOBALS['post'];
+	}
+	function have_posts() {
+		if ($this->current_post + 1 < $this->post_count) {
+			return true;
 		}
-		else {
-			$loop = tl_get_loop_parameters($loopID);
-			$template = $loop['template'];
-		}
-		echo tl_display_loop($loopID, $template, $args, 'shortcode');
+		$this->reset();
+		return false;
+	}
+	function the_post() {
+		$this->current_post += 1;
+		setup_postdata($GLOBALS['post'] = $this->posts[$this->current_post]);
+	}
+	function reset() {
+		$this->current_post = -1;
+		setup_postdata($GLOBALS['post'] = $this->original_post);
 	}
 }
 
+function the_loop($args = null, $query = true) {
+	static $loop;
+	if ($args) {
+		if (is_object($args) and get_class($args) === 'WP_Query') {
+			$args = $args->posts;
+			$query = false;
+		}
+		$loop = new Faux_Loop($query ? get_posts($args) : $args);
+	}
+	return $loop;
+}
 
 function add_post_thumbnail($name, $id, $post_types = array('page', 'post')) {
 	if (class_exists('MultiPostThumbnails')) {
