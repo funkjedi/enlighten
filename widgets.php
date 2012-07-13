@@ -1,5 +1,11 @@
 <?php
 
+add_action('widgets_init', 'wpenlighten_register_widgets');
+function wpenlighten_register_widgets() {
+	register_widget('Load_Template');
+}
+
+
 class Load_Template extends WP_Widget {
   function __construct() {
 		parent::WP_Widget(false, 'Load Template', array('description' => 'Outputs a template using load_template().'));
@@ -30,5 +36,3 @@ class Load_Template extends WP_Widget {
 		<?php
 	}
 }
-
-register_widget('Load_Template');
