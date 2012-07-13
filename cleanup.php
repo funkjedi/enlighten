@@ -48,13 +48,27 @@ function wpenlighten_page_css_class($css_class, $page, $depth, $args, $current_p
 
 
 // Add the ability to use category specific templates
-add_filter('single_template', 'wpcleanup_single_template');
-function wpcleanup_single_template($template) {
+add_filter('single_template', 'wpenlighten_single_template');
+function wpenlighten_single_template($template) {
 	foreach(get_the_category() as $category) {
 		if ($tpl = locate_template("single-$category->slug.php")) return $tpl;
 		if ($tpl = locate_template("single-$category->term_id.php")) return $tpl;
 	}
 	return $template;
+}
+
+// Add the ability to use templates when display Post 2 Post widget or shortcodes
+add_filter('p2p_widget_html', 'wpenlighten_p2p_template_handling', 10, 4);
+add_filter('p2p_shortcode_html', 'wpenlighten_p2p_template_handling', 10, 4);
+function wpenlighten_p2p_template_handling($html, $connected, $ctype, $mode) {
+	$direction = $ctype->get_direction();
+	if (locate_template("p2p-$ctype->name.php") or locate_template("p2p-$ctype->name-$direction.php")) {
+		ob_start();
+		the_loop($connected->items, false);
+		get_template_part("p2p-$ctype->name", $direction);
+		return ob_get_clean();
+	}
+	return $html;
 }
 
 
