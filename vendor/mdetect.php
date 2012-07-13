@@ -1031,11 +1031,3 @@ class uagent_info
 //Was informed by a MobileESP user that it's a best practice
 //  to omit the closing ?&gt; marks here. They can sometimes
 //  cause errors with HTML headers.
-function mdetect($method) {
-   static $mdetect;
-   if (!$mdetect) {
-      $mdetect = new uagent_info();
-   }
-   return $mdetect->$method();
-}
-
