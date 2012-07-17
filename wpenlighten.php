@@ -3,7 +3,7 @@
 Plugin Name: WPenlighten
 Plugin URI: https://github.com/funkjedi/WPenlighten
 Description: Wordpress optimizations and useful template tags and shortcodes
-Version: 0.1.1
+Version: 0.1.2
 Author: Tim Robertson
 Author URI: http://funkjedi.com/
 License: MIT
