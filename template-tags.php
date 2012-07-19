@@ -99,10 +99,13 @@ class Faux_Loop {
 
 function the_loop($args = null, $query = true) {
 	static $loop;
-	if ($args) {
+	if (isset($args)) {
 		if (is_object($args) and get_class($args) === 'WP_Query') {
 			$args = $args->posts;
 			$query = false;
+		}
+		if ($loop) {
+			$loop->reset();
 		}
 		$loop = new Faux_Loop($query ? get_posts($args) : $args);
 	}
