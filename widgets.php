@@ -19,11 +19,15 @@ class Load_Template extends WP_Widget {
 	}
 
 	function update($new_instance, $old_instance) {
+		if ($new_instance['template']) {
+			$new_instance['title'] = substr(basename($new_instance['template']), 0, -4);
+		}
 		return $new_instance;
 	}
 
 	function form($instance) {
 		?>
+			<input id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="hidden" value="<?php echo esc_attr($instance['title']); ?>" /></p>
 			<p>
 				<label for="<?php echo $this->get_field_id('template'); ?>">Template:</label>
 				<select id="<?php echo $this->get_field_id('template'); ?>"	name="<?php echo $this->get_field_name('template'); ?>">
