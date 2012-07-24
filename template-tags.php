@@ -109,6 +109,9 @@ function the_loop($args = null, $query = true) {
 		}
 		$loop = new Faux_Loop($query ? get_posts($args) : $args);
 	}
+	if (isset($loop) === false) {
+		$loop = new Faux_Loop(array($GLOBALS['post']));
+	}
 	return $loop;
 }
 
