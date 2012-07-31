@@ -13,9 +13,14 @@ class Load_Template extends WP_Widget {
 
 	function widget($args, $instance) {
 		extract($args, EXTR_SKIP);
-		echo $before_widget;
+		ob_start();
 		load_template($instance['template'], false);
-		echo $after_widget;
+		$output = trim(ob_get_clean());
+		if (empty($output) === false) {
+			echo str_replace('class="', 'class="' . preg_replace('#[^a-z0-9_-]+#i', '_', $instance['title']) . ' ', $before_widget);
+			echo $output;
+			echo $after_widget;
+		}
 	}
 
 	function update($new_instance, $old_instance) {
