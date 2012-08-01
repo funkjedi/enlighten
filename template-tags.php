@@ -74,11 +74,12 @@ function display_posts($args, $callback, array $callback_args = array()) {
 }
 
 class Faux_Loop {
-	function __construct($posts) {
+	function __construct($posts, $max_num_pages = 1) {
 		$this->posts = $posts;
 		$this->post_count = count($posts);
 		$this->current_post = -1;
 		$this->original_post = $GLOBALS['post'];
+		$this->max_num_pages = $max_num_pages;
 	}
 	function have_posts() {
 		if ($this->current_post + 1 < $this->post_count) {
@@ -97,17 +98,43 @@ class Faux_Loop {
 	}
 }
 
-function the_loop($args = null, $query = true) {
+function the_loop($args = null, $query = 'get_posts') {
 	static $loop;
 	if (isset($args)) {
-		if (is_object($args) and get_class($args) === 'WP_Query') {
-			$args = $args->posts;
-			$query = false;
-		}
 		if ($loop) {
 			$loop->reset();
 		}
-		$loop = new Faux_Loop($query ? get_posts($args) : $args);
+		switch ($query) {
+			case 'get_posts':
+				$loop = new Faux_Loop(get_posts($args));
+				break;
+			case 'wp_query':
+				$args = wp_parse_args($args, array(
+					'post_status'         => 'publish',
+					'posts_per_page'      => 5,
+					'offset'              => 0,
+					'cat'                 => 0,
+					'orderby'             => 'post_date',
+					'order'               => 'DESC',
+					'include'             => array(),
+					'exclude'             => array(),
+					'meta_key'            => '',
+					'meta_value'          => '',
+					'post_type'           => 'post',
+					'ignore_sticky_posts' => true,
+					'no_found_rows'       => true,
+					'suppress_filters'    => true
+				));
+				$wpq = new WP_Query($args);
+				$loop = new Faux_Loop($wpq->posts, $wpq->max_num_pages);
+				break;
+			default:
+				if (is_object($args) and get_class($args) === 'WP_Query') {
+					$loop = new Faux_Loop($args->posts, $args->max_num_pages);
+					break;
+				}
+				$loop = new Faux_Loop($args);
+		}
 	}
 	if (isset($loop) === false) {
 		$loop = new Faux_Loop(array($GLOBALS['post']));
