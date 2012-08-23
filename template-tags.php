@@ -9,7 +9,7 @@ function mdetect($method) {
 	return $mdetect->$method();
 }
 
-function wp_enqueue_less($stylesheet) {
+function wp_enqueue_less($stylesheet, $dependancy = array()) {
 	if (!class_exists('lessc')) {
 		require dirname(__FILE__) . '/vendor/lessc.php';
 	}
@@ -25,7 +25,7 @@ function wp_enqueue_less($stylesheet) {
 				file_put_contents($out, $less->parse());
 			}
 
-			wp_enqueue_style('lessc' . time(), get_template_directory_uri() . "/$stylesheet.css");
+			wp_enqueue_style($stylesheet, get_template_directory_uri() . "/$stylesheet.css", $dependancy);
 		}
 		catch (Exception $e) {}
 	}
