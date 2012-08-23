@@ -180,3 +180,14 @@ function youtube_id($url) {
 		return $matches[3];
 	}
 }
+
+
+function sub_field_index() {
+	global $acf_field;
+	return $acf_field[count($acf_field) - 1]['row'];
+}
+
+function the_sub_field_index() {
+	echo sub_field_index();
+}
+
