@@ -1,8 +1,5 @@
 <?php
 
-require dirname(__FILE__) . '/vendor/twig/bootstrap.php';
-
-
 function wpenlighten_camelcase_shortcode_args($args) {
 	$attrs = array();
 	$callback = create_function('$c', 'return strtoupper($c[1]);');
