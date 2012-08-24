@@ -31,6 +31,9 @@ function wp_enqueue_less($stylesheet, $dependancy = array()) {
 	}
 }
 
+function the_theme_url($path) {
+	print get_template_directory_uri() . '/' . ltrim($path, '/');
+}
 
 function the_content_from($page_id, $suppress_filters = false) {
 	if (is_numeric($page_id)) {
