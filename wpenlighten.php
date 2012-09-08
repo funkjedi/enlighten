@@ -19,7 +19,7 @@ require dirname(__FILE__) . '/vendor/bootstrap.php';
 require dirname(__FILE__) . '/vendor/rawr.php';
 
 
-add_action('init', 'wpenlighten_github_updater');
+//add_action('init', 'wpenlighten_github_updater');
 function wpenlighten_github_updater() {
 	if (is_admin()) {
 		require_once dirname(__FILE__) . '/vendor/wordpress-github-plugin-updater.php';
