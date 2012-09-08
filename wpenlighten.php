@@ -38,3 +38,36 @@ function wpenlighten_github_updater() {
 		new WPGitHubUpdater($config);
 	}
 }
+
+
+add_filter('style_loader_src', 'wp_enqueue_style_less', 10, 2);
+function wp_enqueue_style_less($src, $handle) {
+	if (stripos($src, '.less') === false) {
+		return $src;
+	}
+	$path = pathinfo(parse_url($src, PHP_URL_PATH));
+	if ($path['extension'] === 'less') {
+		$upload_dir = wp_upload_dir();
+
+		// build file paths for stylesheets
+		$in = "$_SERVER[DOCUMENT_ROOT]$path[dirname]/$path[basename]"; $filename = substr(sha1($in), -8) . "_$path[filename].css";
+		$out = "$upload_dir[basedir]/$filename";
+
+		// compile file $in to file $out if $in is newer than $out
+		// returns true when it compiles, false otherwise
+		if (!is_file($out) || filemtime($in) > filemtime($out)) {
+			try {
+				require_once dirname(__FILE__) . '/vendor/lessc.php';
+				$less = new lessc($in);
+				file_put_contents($out, $less->parse());
+			}
+			catch (Exception $e) {
+				print '<!-- ' . $e->getMessage() . ' -->';
+			}
+		}
+
+		return $upload_dir['baseurl'] . '/' . $filename;
+	}
+
+	return $src;
+}

@@ -9,31 +9,56 @@ function mdetect($method) {
 	return $mdetect->$method();
 }
 
-function wp_enqueue_less($stylesheet, $dependancy = array()) {
-	if (!class_exists('lessc')) {
-		require dirname(__FILE__) . '/vendor/lessc.php';
-	}
-	if (class_exists('lessc')) {
-		try {
-			$in = locate_template("/$stylesheet");
-			$out = locate_template("/$stylesheet.css");
 
-			// compile file $in to file $out if $in is newer than $out
-			// returns true when it compiles, false otherwise
-			if (!is_file($out) || filemtime($in) > filemtime($out)) {
-				$less = new lessc($in);
-				file_put_contents($out, $less->parse());
-			}
+function sub_field_index() {
+	global $acf_field;
+	return $acf_field[count($acf_field) - 1]['row'];
+}
 
-			wp_enqueue_style($stylesheet, get_template_directory_uri() . "/$stylesheet.css", $dependancy);
-		}
-		catch (Exception $e) {}
-	}
+function the_sub_field_index() {
+	echo sub_field_index();
+}
+
+
+function get_theme_url($path) {
+	return get_template_directory_uri() . '/' . ltrim($path, '/');
 }
 
 function the_theme_url($path) {
-	print get_template_directory_uri() . '/' . ltrim($path, '/');
+	print get_theme_url($path);
 }
+
+
+function add_post_thumbnail($name, $id, $post_types = array('page', 'post')) {
+	if (class_exists('MultiPostThumbnails')) {
+		foreach ($post_types as $post_type)
+			new MultiPostThumbnails(array('label' => $name, 'id' => $id, 'post_type' => $post_type));
+	}
+}
+
+function has_post_thumbnail_src($multi_post_thumbnail = '') {
+	global $post;
+	$attachmentID = null;
+	if (class_exists('MultiPostThumbnails')) {
+		if ($multi_post_thumbnail) {
+			$attachmentID = MultiPostThumbnails::get_post_thumbnail_id(get_post_type($post), $multi_post_thumbnail, $post->ID);
+		}
+		elseif (function_exists('qtrans_getLanguage')) {
+			$attachmentID = MultiPostThumbnails::get_post_thumbnail_id(get_post_type($post), 'featured-image-' . qtrans_getLanguage(), $post->ID);
+		}
+	}
+	if (!isset($attachmentID) or !$attachmentID) {
+		$attachmentID = get_post_thumbnail_id($post->ID);
+	}
+	return $attachmentID;
+}
+
+function the_post_thumbnail_src($size = 'full', $background_image = false, $multi_post_thumbnail = '') {
+	if ($image = wp_get_attachment_image_src(has_post_thumbnail_src($multi_post_thumbnail), $size)) {
+		echo $background_image ? "background-image: url({$image[0]});" : $image[0];
+	}
+}
+
 
 function the_content_from($page_id, $suppress_filters = false) {
 	if (is_numeric($page_id)) {
@@ -75,6 +100,7 @@ function display_posts($args, $callback, array $callback_args = array()) {
 	// instead of using wp_reset_postdata() we reinstate the original $post;
 	setup_postdata($GLOBALS['post'] = $original_post);
 }
+
 
 class Faux_Loop {
 	function __construct($posts, $max_num_pages = 1) {
@@ -145,35 +171,6 @@ function the_loop($args = null, $query = 'get_posts') {
 	return $loop;
 }
 
-function add_post_thumbnail($name, $id, $post_types = array('page', 'post')) {
-	if (class_exists('MultiPostThumbnails')) {
-		foreach ($post_types as $post_type)
-			new MultiPostThumbnails(array('label' => $name, 'id' => $id, 'post_type' => $post_type));
-	}
-}
-
-function has_post_thumbnail_src($multi_post_thumbnail = '') {
-	global $post;
-	$attachmentID = null;
-	if (class_exists('MultiPostThumbnails')) {
-		if ($multi_post_thumbnail) {
-			$attachmentID = MultiPostThumbnails::get_post_thumbnail_id(get_post_type($post), $multi_post_thumbnail, $post->ID);
-		}
-		elseif (function_exists('qtrans_getLanguage')) {
-			$attachmentID = MultiPostThumbnails::get_post_thumbnail_id(get_post_type($post), 'featured-image-' . qtrans_getLanguage(), $post->ID);
-		}
-	}
-	if (!isset($attachmentID) or !$attachmentID) {
-		$attachmentID = get_post_thumbnail_id($post->ID);
-	}
-	return $attachmentID;
-}
-
-function the_post_thumbnail_src($size = 'full', $background_image = false, $multi_post_thumbnail = '') {
-	if ($image = wp_get_attachment_image_src(has_post_thumbnail_src($multi_post_thumbnail), $size)) {
-		echo $background_image ? "background-image: url({$image[0]});" : $image[0];
-	}
-}
 
 
 function youtube_id($url) {
@@ -182,15 +179,5 @@ function youtube_id($url) {
 	if (isset($matches[3]) and !empty($matches[3])) {
 		return $matches[3];
 	}
-}
-
-
-function sub_field_index() {
-	global $acf_field;
-	return $acf_field[count($acf_field) - 1]['row'];
-}
-
-function the_sub_field_index() {
-	echo sub_field_index();
 }
 
