@@ -17,6 +17,7 @@ require dirname(__FILE__) . '/shortcodes.php';
 require dirname(__FILE__) . '/widgets.php';
 require dirname(__FILE__) . '/vendor/bootstrap.php';
 require dirname(__FILE__) . '/vendor/rawr.php';
+require dirname(__FILE__) . '/vendor/wpformhelper.php';
 
 
 //add_action('init', 'wpenlighten_github_updater');
