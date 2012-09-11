@@ -6,7 +6,7 @@ function bootstrap_pagination($args = array()) {
 		'base'    => str_replace(999999999, '%#%', get_pagenum_link(999999999)),
 		'format'  => '?paged=%#%',
 		'current' => max(1, get_query_var('paged')),
-		'total'   => $wp_query->max_num_pages
+		'total'   => isset($args['max_num_pages']) ? $args['max_num_pages'] : $wp_query->max_num_pages
 	), $args));
 }
 

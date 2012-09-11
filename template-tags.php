@@ -181,3 +181,10 @@ function youtube_id($url) {
 	}
 }
 
+function vimeo_id($url) {
+	$matches = array();
+	preg_match( '#https?://(www.vimeo|vimeo)\.com(/|/clip:)(\d+)(.*?)#i', $url, $matches);
+	if (isset($matches[3]) and !empty($matches[3])) {
+		return $matches[3];
+	}
+}

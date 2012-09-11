@@ -21,6 +21,7 @@ class Load_Template extends WP_Widget {
 	}
 	function form($instance) {
 		?>
+			<input id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="hidden" value="<?php echo esc_attr($instance['title']); ?>" />
 			<label for="<?php echo $this->get_field_id('title'); ?>">Template:</label>
 			<select id="<?php echo $this->get_field_id('title'); ?>"	name="<?php echo $this->get_field_name('title'); ?>">
 				<option value="">-None-</option>
