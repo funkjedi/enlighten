@@ -175,9 +175,9 @@ function the_loop($args = null, $query = 'get_posts') {
 
 function youtube_id($url) {
 	$matches = array();
-	preg_match('#http://(www.youtube|youtube|[A-Za-z]{2}.youtube)\.com/(watch\?v=|w/\?v=|\?v=)([\w-]+)(.*?)#i', $url, $matches);
-	if (isset($matches[3]) and !empty($matches[3])) {
-		return $matches[3];
+	preg_match('#(?<=(?:v|i)=)[a-zA-Z0-9-]+(?=&)|(?<=(?:v|i)\/)[^&\n]+|(?<=embed\/)[^"&\n]+|(?<=(?:v|i)=)[^&\n]+|(?<=youtu.be\/)[^&\n]+#i', $url, $matches);
+	if (isset($matches[0]) and !empty($matches[0])) {
+		return trim($matches[0]);
 	}
 }
 
