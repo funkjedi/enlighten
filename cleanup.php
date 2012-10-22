@@ -6,7 +6,7 @@ function add_filters($tags, $function) {
 	}
 }
 
-add_theme_support('root-relative-urls');
+//add_theme_support('root-relative-urls');
 require dirname(__FILE__) . '/vendor/roots/cleanup.php';
 
 
