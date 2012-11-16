@@ -41,30 +41,65 @@ function wpenlighten_github_updater() {
 }
 
 
-add_filter('style_loader_src', 'wp_enqueue_style_less', 10, 2);
-function wp_enqueue_style_less($src, $handle) {
-	if (stripos($src, '.less') === false) {
+add_filter('style_loader_src', 'wp_enqueue_style_libraries', 10, 2);
+function wp_enqueue_style_libraries($src, $handle) {
+	if (stripos($src, '.css') === strlen($src) - 4) {
 		return $src;
 	}
 	$path = pathinfo(parse_url($src, PHP_URL_PATH));
-	if ($path['extension'] === 'less') {
+	if (in_array( $path['extension'], array('less','sass','scss') )) {
 		$upload_dir = wp_upload_dir();
 
 		// build file paths for stylesheets
-		$in = "$_SERVER[DOCUMENT_ROOT]$path[dirname]/$path[basename]"; $filename = substr(sha1($in), -8) . "_$path[filename].css";
+		$in = "$_SERVER[DOCUMENT_ROOT]$path[dirname]/$path[basename]"; $filename = "$path[filename].$path[extension]." . substr(sha1($in), -8) . ".css";
 		$out = "$upload_dir[basedir]/$filename";
 
-		// compile file $in to file $out if $in is newer than $out
-		// returns true when it compiles, false otherwise
-		if (!is_file($out) || filemtime($in) > filemtime($out)) {
-			try {
-				require_once dirname(__FILE__) . '/vendor/lessc.php';
-				$less = new lessc($in);
-				file_put_contents($out, $less->parse());
-			}
-			catch (Exception $e) {
-				print '<!-- ' . $e->getMessage() . ' -->';
-			}
+		switch ($path['extension']) {
+
+			// compile less files
+			case 'less':
+				try {
+					require_once dirname(__FILE__) . '/vendor/lessc.php';
+					$less = new lessc;
+					$less->checkedCompile($in, $out);
+				}
+				catch (Exception $e) {
+					print '<!-- ' . $e->getMessage() . ' -->';
+					return $src;
+				}
+				break;
+
+
+			// compile sass files
+			case 'sass':
+			case 'scss':
+				try {
+					require_once dirname(__FILE__) . '/vendor/phpsass/SassParser.php';
+					$parser = new SassParser(array(
+						//'style'               => 'expanded',
+						'cache'               => false,
+						'syntax'              => $path['extension'],
+						'debug'               => false,
+						//'debug_info'          => false,
+						//'load_paths'          => array(dirname($in)),
+						//'filename'            => $in,
+						//'load_path_functions' => array('sassy_load_callback'),
+						//'functions'           => sassy_get_functions(),
+						//'callbacks'           => array(
+						//	'warn'                => null,
+						//	'debug'               => null,
+						//),
+					));
+					if (!is_file($out) || filemtime($in) > filemtime($out)) {
+						file_put_contents($out, $parser->toCss($in));
+					}
+				}
+				catch (Exception $e) {
+					print '<!-- ' . $e->getMessage() . ' -->';
+					return $src;
+				}
+				break;
+
 		}
 
 		return $upload_dir['baseurl'] . '/' . $filename;
