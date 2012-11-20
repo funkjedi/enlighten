@@ -60,8 +60,28 @@ function wp_enqueue_style_libraries($src, $handle) {
 			case 'less':
 				try {
 					require_once dirname(__FILE__) . '/vendor/lessc.php';
-					$less = new lessc;
+					$less = new lessc();
 					$less->checkedCompile($in, $out);
+				}
+				catch (Exception $e) {
+					print '<!-- ' . $e->getMessage() . ' -->';
+					return $src;
+				}
+				break;
+
+
+			// compile scss files
+			case 'scss':
+				try {
+					require_once dirname(__FILE__) . '/vendor/scssphp/scss.inc.php';
+					$parser = new scssc();
+					$parser->setImportPaths("$_SERVER[DOCUMENT_ROOT]$path[dirname]");
+					$parser->registerFunction("asset-url", create_function('$a', 'return "url(" . get_template_directory_uri() . "/" . $a[0][2][0][2][0] . ")";'));
+
+					if (!is_file($out) || filemtime($in) > filemtime($out)) {
+						$data = file_get_contents($in);
+						file_put_contents($out, $parser->compile($data));
+					}
 				}
 				catch (Exception $e) {
 					print '<!-- ' . $e->getMessage() . ' -->';
@@ -72,7 +92,6 @@ function wp_enqueue_style_libraries($src, $handle) {
 
 			// compile sass files
 			case 'sass':
-			case 'scss':
 				try {
 					require_once dirname(__FILE__) . '/vendor/phpsass/SassParser.php';
 					$parser = new SassParser(array(
