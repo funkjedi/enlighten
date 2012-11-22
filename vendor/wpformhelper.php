@@ -15,7 +15,9 @@ class WPFormHelper {
 
 
 	public function __construct() {
-		$this->params = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+		$this->params = array_merge(
+			(array) filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING),
+			(array) filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING));
 	}
 
 	public static function init() {
@@ -38,6 +40,16 @@ WPFormHelper::init();
 function has_param($key) {
 	global $wpfh;
 	return isset($wpfh->params[$key]);
+}
+
+function has_params($params) {
+	global $wpfh;
+	foreach (explode(',', $params) as $key) {
+		if (has_param($key) === false) {
+			return false;
+		}
+	}
+	return true;
 }
 
 function get_param($key) {

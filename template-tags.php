@@ -1,5 +1,14 @@
 <?php
 
+function __d() {
+    print "<pre>";
+    foreach(func_get_args() as $index => $arg) {
+        print_r($arg);
+        echo "\n";
+    }
+    exit;
+}
+
 function mdetect($method) {
 	static $mdetect;
 	if (!$mdetect) {

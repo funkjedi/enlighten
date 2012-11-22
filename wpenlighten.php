@@ -121,7 +121,7 @@ function wp_enqueue_style_libraries($src, $handle) {
 
 		}
 
-		return $upload_dir['baseurl'] . '/' . $filename;
+		return $upload_dir['baseurl'] . '/' . $filename . '?' . time();
 	}
 
 	return $src;

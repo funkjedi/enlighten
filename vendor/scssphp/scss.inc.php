@@ -588,7 +588,8 @@ class scssc {
 			list(,$value, $pos) = $child;
 			$line = $this->parser->getLineNo($pos);
 			$value = $this->compileValue($this->reduce($value, true));
-			fwrite(STDERR, "Line $line DEBUG: $value\n");
+			//fwrite(STDERR, "Line $line DEBUG: $value\n");
+			print "<!-- Line $line DEBUG: $value -->\n";
 			break;
 		default:
 			throw new exception("unknown child type: $child[0]");
