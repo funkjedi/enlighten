@@ -109,7 +109,7 @@ class Faux_Loop {
 	}
 }
 
-function loopr($args = null) {
+function faux_loop($args = null) {
 	if (isset($args)) {
 		// use existing an WP_Query
 		if (is_object($args) and get_class($args) === 'WP_Query') {
