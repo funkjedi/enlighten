@@ -1,27 +1,46 @@
-# WPenlighten
+# Enlighten
 
+Enlighten is a collection of Wordpress optimizations, useful template tags, and shortcodes. It includes a modified version of the cleanup optimizations from [Roots Theme](https://github.com/retlehs/roots/blob/master/doc/cleanup.md).
 
-Wordpress optimizations and useful template tags and shortcodes
+Hooks into __wp_enqueue_style__ allowing automatic compilation of SASS, SCSS, and LESS files. Compiled stylesheets are saved to the Wordpress uploads directory.
 
+### Template Tags
 
-__wp_enqueue_less($stylesheet)__
-Compiles less stylesheet into css. Path is relative to the template directory.
+```php 
+the_content_from($page /* ID, slug or title */, $suppress_filters = false)
+```
 
-__the_content_from($page_id, $suppress_filters = false)__
-Takes a post ID, slug or title.
+```php
+get_template_part_for($slug, [$name = '',] $args)
+```
 
-__get_template_part_for($slug, [$name = '',] $args)__
+The __loopr__ template tag emulates a WP_Query style loop. It has a couple advantages over using a WP_Query object directly though. Most noticeably the ability to easily place an existing array of posts into a loop. 
+```php
+// Possible arguments are: a WP_Query object, WP_Query args or an array of posts
+$loop = loopr(array(
+  'post_type' => 'events',
+  'no_paging' => true,
+  'meta_key'  => 'date',
+  'orderby'   => 'meta_value',
+  'order'     => 'DESC'
+));
 
-__display_posts($args, $callback, $callback_args = array())__
+while ($loop->have_posts()) : $loop->the_post();
+  the_content();
+endwhile;
+```
 
-__the_loop([$args = null], [$query = true])__
+```php
+add_post_thumbnail($name, $id, $post_types = array('page', 'post'))
+```
 
-__add_post_thumbnail($name, $id, $post_types = array('page', 'post'))__
+```php
+has_post_thumbnail_src($multi_post_thumbnail = '')
+```
 
-__has_post_thumbnail_src($multi_post_thumbnail = '')__
-
-__the_post_thumbnail_src($size = 'full', $background_image = false, $multi_post_thumbnail = '')__
-
+```php
+the_post_thumbnail_src($size = 'full', $background_image = false, $multi_post_thumbnail = '')
+```
 
 
 ~Current Version:0.1.2~
