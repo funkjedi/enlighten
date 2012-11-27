@@ -14,10 +14,10 @@ the_content_from($page /* ID, slug or title */, $suppress_filters = false)
 get_template_part_for($slug, [$name = '',] $args)
 ```
 
-The __loopr__ template tag emulates a WP_Query style loop. It has a couple advantages over using a WP_Query object directly though. Most noticeably the ability to easily place an existing array of posts into a loop. 
+The __faux_loop__ template tag emulates a WP_Query style loop. It has a couple advantages over using a WP_Query object directly though. Most noticeably the ability to easily place an existing array of posts into a loop. 
 ```php
 // Possible arguments are: a WP_Query object, WP_Query args or an array of posts
-$loop = loopr(array(
+$loop = faux_loop(array(
   'post_type' => 'events',
   'no_paging' => true,
   'meta_key'  => 'date',
