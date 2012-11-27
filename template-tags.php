@@ -83,33 +83,6 @@ function the_content_from($page_id, $suppress_filters = false) {
 	}
 }
 
-function get_template_part_for($slug, $args) {
-	$name = "";
-	if (func_num_args() > 2) {
-		list($slug, $name, $args) = func_get_args();
-	}
-	display_posts($args, 'get_template_part', array($slug, $name));
-}
-
-function display_posts($args, $callback, array $callback_args = array()) {
-	$original_post = $GLOBALS['post'];
-	if (is_array($args)) {
-		foreach (get_posts($args) as $post) {
-			setup_postdata($GLOBALS['post'] = $post);
-			call_user_func_array($callback, $callback_args);
-			do_action('display_posts', $post->ID);
-		}
-	}
-	else {
-		$post = is_numeric($args) ? get_page($args) : get_page_by_title($args);
-		setup_postdata($GLOBALS['post'] = $post);
-		call_user_func_array($callback, $callback_args);
-		do_action('display_posts', $post->ID);
-	}
-	// instead of using wp_reset_postdata() we reinstate the original $post;
-	setup_postdata($GLOBALS['post'] = $original_post);
-}
-
 
 class Faux_Loop {
 	function __construct($posts, $max_num_pages = 1) {
@@ -136,45 +109,40 @@ class Faux_Loop {
 	}
 }
 
-function the_loop($args = null, $query = 'get_posts') {
-	static $loop;
+function loopr($args = null) {
 	if (isset($args)) {
-		if ($loop) {
-			$loop->reset();
+		// use existing an WP_Query
+		if (is_object($args) and get_class($args) === 'WP_Query') {
+			$loop = new Faux_Loop($args->posts, $args->max_num_pages);
 		}
-		switch ($query) {
-			case 'get_posts':
-				$loop = new Faux_Loop(get_posts($args));
-				break;
-			case 'wp_query':
-				$args = wp_parse_args($args, array(
-					'post_status'         => 'publish',
-					'posts_per_page'      => 5,
-					'offset'              => 0,
-					'cat'                 => 0,
-					'orderby'             => 'post_date',
-					'order'               => 'DESC',
-					'include'             => array(),
-					'exclude'             => array(),
-					'meta_key'            => '',
-					'meta_value'          => '',
-					'post_type'           => 'post',
-					'ignore_sticky_posts' => true,
-					'no_found_rows'       => true,
-					'suppress_filters'    => true
-				));
-				$wpq = new WP_Query($args);
-				$loop = new Faux_Loop($wpq->posts, $wpq->max_num_pages);
-				break;
-			default:
-				if (is_object($args) and get_class($args) === 'WP_Query') {
-					$loop = new Faux_Loop($args->posts, $args->max_num_pages);
-					break;
-				}
-				$loop = new Faux_Loop($args);
+		// check for an existing array of posts
+		elseif (is_array($args) and isset($args[0]->ID)) {
+			$loop = new Faux_Loop($args);
+		}
+		// create a new WP_Query using get_post defaults
+		// as the defaults for the new query
+		else {
+			$wpq = new WP_Query(wp_parse_args($args, array(
+				'post_status'         => 'publish',
+				'posts_per_page'      => 5,
+				'offset'              => 0,
+				'cat'                 => 0,
+				'orderby'             => 'post_date',
+				'order'               => 'DESC',
+				'include'             => array(),
+				'exclude'             => array(),
+				'meta_key'            => '',
+				'meta_value'          => '',
+				'post_type'           => 'post',
+				'ignore_sticky_posts' => true,
+				'no_found_rows'       => true,
+				'suppress_filters'    => true,
+			)));
+			$loop = new Faux_Loop($wpq->posts, $wpq->max_num_pages);
 		}
 	}
-	if (isset($loop) === false) {
+	else {
+		// use the current post
 		$loop = new Faux_Loop(array($GLOBALS['post']));
 	}
 	return $loop;
