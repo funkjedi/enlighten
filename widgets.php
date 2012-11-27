@@ -1,7 +1,7 @@
 <?php
 
-add_action('widgets_init', 'wpenlighten_register_widgets');
-function wpenlighten_register_widgets() {
+add_action('widgets_init', 'enlighten_register_widgets');
+function enlighten_register_widgets() {
 	register_widget('Load_Template');
 }
 

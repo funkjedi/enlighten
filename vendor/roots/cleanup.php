@@ -458,8 +458,8 @@ class Roots_Nav_Walker extends Walker_Nav_Menu {
 
     $classes = array_filter($classes, array(&$this, 'check_current'));
 
-    if ($item->menu_order == wpenlighten_get_menu_order($item, $args, 'first')) $classes[] = 'first';
-    if ($item->menu_order == wpenlighten_get_menu_order($item, $args, 'last' )) $classes[] = 'last';
+    if ($item->menu_order == enlighten_get_menu_order($item, $args, 'first')) $classes[] = 'first';
+    if ($item->menu_order == enlighten_get_menu_order($item, $args, 'last' )) $classes[] = 'last';
 
     if ($custom_classes = get_post_meta($item->ID, '_menu_item_classes', true)) {
       foreach ($custom_classes as $custom_class) {
@@ -519,8 +519,8 @@ class Roots_Navbar_Nav_Walker extends Walker_Nav_Menu {
 
     $classes = array_filter($classes, array(&$this, 'check_current'));
 
-    if ($item->menu_order == wpenlighten_get_menu_order($item, $args, 'first')) $classes[] = 'first';
-    if ($item->menu_order == wpenlighten_get_menu_order($item, $args, 'last' )) $classes[] = 'last';
+    if ($item->menu_order == enlighten_get_menu_order($item, $args, 'first')) $classes[] = 'first';
+    if ($item->menu_order == enlighten_get_menu_order($item, $args, 'last' )) $classes[] = 'last';
 
     if ($custom_classes = get_post_meta($item->ID, '_menu_item_classes', true)) {
       foreach ($custom_classes as $custom_class) {

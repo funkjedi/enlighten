@@ -1,7 +1,7 @@
 <?php
 /*
-Plugin Name: WPenlighten
-Plugin URI: https://github.com/funkjedi/WPenlighten
+Plugin Name: Enlighten
+Plugin URI: https://github.com/funkjedi/enlighten
 Description: Wordpress optimizations and useful template tags and shortcodes
 Version: 0.1.2
 Author: Tim Robertson
@@ -20,17 +20,17 @@ require dirname(__FILE__) . '/vendor/rawr.php';
 require dirname(__FILE__) . '/vendor/wpformhelper.php';
 
 
-//add_action('init', 'wpenlighten_github_updater');
-function wpenlighten_github_updater() {
+//add_action('init', 'enlighten_github_updater');
+function enlighten_github_updater() {
 	if (is_admin()) {
 		require_once dirname(__FILE__) . '/vendor/wordpress-github-plugin-updater.php';
 		$config = array(
 			'slug'               => plugin_basename(__FILE__),
-			'proper_folder_name' => 'wpenlighten',
-			'api_url'            => 'https://api.github.com/repos/funkjedi/WPenlighten',
-			'raw_url'            => 'https://raw.github.com/funkjedi/WPenlighten/master',
-			'github_url'         => 'https://github.com/funkjedi/WPenlighten',
-			'zip_url'            => 'https://github.com/funkjedi/WPenlighten/zipball/master',
+			'proper_folder_name' => 'enlighten',
+			'api_url'            => 'https://api.github.com/repos/funkjedi/enlighten',
+			'raw_url'            => 'https://raw.github.com/funkjedi/enlighten/master',
+			'github_url'         => 'https://github.com/funkjedi/enlighten',
+			'zip_url'            => 'https://github.com/funkjedi/enlighten/zipball/master',
 			'sslverify'          => true,
 			'requires'           => '3.0',
 			'tested'             => '3.4',

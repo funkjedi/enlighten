@@ -28,8 +28,8 @@ function wpcleanup_remove_dashboard_widgets() {
 	remove_meta_box('dashboard_recent_comments', 'dashboard', 'normal');
 }
 
-add_filter('the_posts', 'wpenlighten_search_wp_query', 8);
-function wpenlighten_search_wp_query($args) {
+add_filter('the_posts', 'enlighten_search_wp_query', 8);
+function enlighten_search_wp_query($args) {
 	global $wp_query;
 	if (isset($wp_query->query_vars['s'])) {
 		$wp_query->query_vars['s'] = urldecode($wp_query->query_vars['s']);
@@ -37,8 +37,8 @@ function wpenlighten_search_wp_query($args) {
 	return $args;
 }
 
-add_filter('page_css_class', 'wpenlighten_page_css_class', 10, 5);
-function wpenlighten_page_css_class($css_class, $page, $depth, $args, $current_page) {
+add_filter('page_css_class', 'enlighten_page_css_class', 10, 5);
+function enlighten_page_css_class($css_class, $page, $depth, $args, $current_page) {
 	$css_class = array("page-$page->post_name");
 	if ($page->ID === $current_page) {
 		$css_class[] = 'active';
@@ -48,8 +48,8 @@ function wpenlighten_page_css_class($css_class, $page, $depth, $args, $current_p
 
 
 // Add the ability to use category specific templates
-add_filter('single_template', 'wpenlighten_single_template');
-function wpenlighten_single_template($template) {
+add_filter('single_template', 'enlighten_single_template');
+function enlighten_single_template($template) {
 	foreach(get_the_category() as $category) {
 		if ($tpl = locate_template("single-$category->slug.php")) return $tpl;
 		if ($tpl = locate_template("single-$category->term_id.php")) return $tpl;
@@ -58,9 +58,9 @@ function wpenlighten_single_template($template) {
 }
 
 // Add the ability to use templates when display Post 2 Post widget or shortcodes
-add_filter('p2p_widget_html', 'wpenlighten_p2p_template_handling', 10, 4);
-add_filter('p2p_shortcode_html', 'wpenlighten_p2p_template_handling', 10, 4);
-function wpenlighten_p2p_template_handling($html, $connected, $ctype, $mode) {
+add_filter('p2p_widget_html', 'enlighten_p2p_template_handling', 10, 4);
+add_filter('p2p_shortcode_html', 'enlighten_p2p_template_handling', 10, 4);
+function enlighten_p2p_template_handling($html, $connected, $ctype, $mode) {
 	$direction = $ctype->get_direction();
 	if (locate_template("p2p-$ctype->name.php") or locate_template("p2p-$ctype->name-$direction.php")) {
 		ob_start();
@@ -73,7 +73,7 @@ function wpenlighten_p2p_template_handling($html, $connected, $ctype, $mode) {
 
 
 // Helper function for providing "first" and "last" classes to the menu walker
-function wpenlighten_get_menu_order($item, $args, $which = 'first') {
+function enlighten_get_menu_order($item, $args, $which = 'first') {
 	static $cache = array('first' => array(), 'last' => array());
 
 	// return cached item
