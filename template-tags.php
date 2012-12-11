@@ -30,6 +30,17 @@ function __d() {
     exit;
 }
 
+
+function utc_date($format, $timestamp = null) {
+	if (!$timestamp) {
+		$timestamp = time();
+	}
+	$date = new DateTime("@$timestamp");
+	$date->setTimezone(new DateTimeZone('UTC'));
+	return $date->format($format);	
+}
+
+
 function mdetect($method) {
 	static $mdetect;
 	if (!$mdetect) {
