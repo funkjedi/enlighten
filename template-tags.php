@@ -31,13 +31,24 @@ function __d() {
 }
 
 
-function utc_date($format, $timestamp = null) {
-	if (!$timestamp) {
-		$timestamp = time();
+function utc_date($format, $now = null) {
+	if (!$now) {
+		$now = time();
 	}
-	$date = new DateTime("@$timestamp");
+	$date = new DateTime("@$now");
 	$date->setTimezone(new DateTimeZone('UTC'));
-	return $date->format($format);	
+	return $date->format($format);
+}
+
+function strtotime_tz($timezone, $time, $now = null) {
+	if (!$now) {
+		$now = time();
+	}
+	$defaultTimezone = date_default_timezone_get();
+	date_default_timezone_set($timezone);
+	$time = strtotime($time, $now);
+	date_default_timezone_set($defaultTimezone);
+	return $time;
 }
 
 
