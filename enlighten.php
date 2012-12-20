@@ -41,6 +41,17 @@ function enlighten_github_updater() {
 }
 
 
+// required to allow Advanced Custom Fields and
+// Custom Post Type Switcher to work together
+add_filter('pts_post_type_filter', 'enlighten_pts_disable');
+function enlighten_pts_disable($args) {
+	if (get_post_type() === 'acf') {
+		$args = array('name' => 'acf');
+	}
+	return $args;
+}
+
+
 add_filter('style_loader_src', 'wp_enqueue_style_libraries', 10, 2);
 function wp_enqueue_style_libraries($src, $handle) {
 	if (stripos($src, '.css') === strlen($src) - 4) {
