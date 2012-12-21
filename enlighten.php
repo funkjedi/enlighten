@@ -41,14 +41,19 @@ function enlighten_github_updater() {
 }
 
 
-// required to allow Advanced Custom Fields and
-// Custom Post Type Switcher to work together
+// allow Advanced Custom Fields and Custom Post Type Switcher to work together
 add_filter('pts_post_type_filter', 'enlighten_pts_disable');
 function enlighten_pts_disable($args) {
 	if (get_post_type() === 'acf') {
 		$args = array('name' => 'acf');
 	}
 	return $args;
+}
+
+// run all Advanced Custom Fields through qTranslate
+add_filter('acf_load_value', 'enlighten_acf_load_value');
+function enlighten_acf_load_value($value) {
+	return is_string($value) ? __($value) : $value;
 }
 
 
