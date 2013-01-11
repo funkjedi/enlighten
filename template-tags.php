@@ -111,6 +111,14 @@ function the_post_thumbnail_src($size = 'full', $background_image = false, $mult
 	}
 }
 
+function the_post_thumbnail_caption($multi_post_thumbnail = '') {
+	if ($attachmentID = has_post_thumbnail_src($multi_post_thumbnail)) {
+		if ($post = get_post($attachmentID)) {
+			print $post->post_excerpt;
+		}
+	}
+}
+
 
 function the_content_from($page_id, $suppress_filters = false) {
 	if (is_numeric($page_id)) {
