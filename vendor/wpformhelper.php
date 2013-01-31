@@ -67,12 +67,12 @@ function the_param($key) {
 }
 
 function the_param_checked($key, $value) {
-	if (the_param_value($key) == $value)
+	if (get_param($key) == $value)
 		print ' checked="checked"';
 }
 
 function the_param_selected($key, $value) {
-	if (the_param_value($key) == $value)
+	if (get_param($key) == $value)
 		print ' selected="selected"';
 }
 
