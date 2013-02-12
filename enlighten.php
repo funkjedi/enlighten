@@ -9,8 +9,6 @@ Author URI: http://funkjedi.com/
 License: MIT
 */
 
-define('WP_GITHUB_FORCE_UPDATE', true);
-
 require dirname(__FILE__) . '/cleanup.php';
 require dirname(__FILE__) . '/template-tags.php';
 require dirname(__FILE__) . '/shortcodes.php';
@@ -18,27 +16,6 @@ require dirname(__FILE__) . '/widgets.php';
 require dirname(__FILE__) . '/vendor/bootstrap.php';
 require dirname(__FILE__) . '/vendor/rawr.php';
 require dirname(__FILE__) . '/vendor/wpformhelper.php';
-
-
-//add_action('init', 'enlighten_github_updater');
-function enlighten_github_updater() {
-	if (is_admin()) {
-		require_once dirname(__FILE__) . '/vendor/wordpress-github-plugin-updater.php';
-		$config = array(
-			'slug'               => plugin_basename(__FILE__),
-			'proper_folder_name' => 'enlighten',
-			'api_url'            => 'https://api.github.com/repos/funkjedi/enlighten',
-			'raw_url'            => 'https://raw.github.com/funkjedi/enlighten/master',
-			'github_url'         => 'https://github.com/funkjedi/enlighten',
-			'zip_url'            => 'https://github.com/funkjedi/enlighten/zipball/master',
-			'sslverify'          => true,
-			'requires'           => '3.0',
-			'tested'             => '3.4',
-			'readme'             => 'README.md'
-		);
-		new WPGitHubUpdater($config);
-	}
-}
 
 
 // allow Advanced Custom Fields and Custom Post Type Switcher to work together
@@ -97,36 +74,6 @@ function wp_enqueue_style_libraries($src, $handle) {
 					if (!is_file($out) || filemtime($in) > filemtime($out)) {
 						$data = file_get_contents($in);
 						file_put_contents($out, $parser->compile($data));
-					}
-				}
-				catch (Exception $e) {
-					print '<!-- ' . $e->getMessage() . ' -->';
-					return $src;
-				}
-				break;
-
-
-			// compile sass files
-			case 'sass':
-				try {
-					require_once dirname(__FILE__) . '/vendor/phpsass/SassParser.php';
-					$parser = new SassParser(array(
-						//'style'               => 'expanded',
-						'cache'               => false,
-						'syntax'              => $path['extension'],
-						'debug'               => false,
-						//'debug_info'          => false,
-						//'load_paths'          => array(dirname($in)),
-						//'filename'            => $in,
-						//'load_path_functions' => array('sassy_load_callback'),
-						//'functions'           => sassy_get_functions(),
-						//'callbacks'           => array(
-						//	'warn'                => null,
-						//	'debug'               => null,
-						//),
-					));
-					if (!is_file($out) || filemtime($in) > filemtime($out)) {
-						file_put_contents($out, $parser->toCss($in));
 					}
 				}
 				catch (Exception $e) {
