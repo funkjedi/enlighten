@@ -1,19 +1,14 @@
 <?php
 
-function add_filters($tags, $function) {
-	foreach($tags as $tag) {
-		add_filter($tag, $function);
-	}
-}
+add_theme_support('nice-search');
 
-//add_theme_support('root-relative-urls');
+require dirname(__FILE__) . '/vendor/roots/utils.php';
 require dirname(__FILE__) . '/vendor/roots/cleanup.php';
-
+require dirname(__FILE__) . '/vendor/roots/nav.php';
 
 
 // Set the post revisions to 5 unless previously set to avoid DB bloat
 if (!defined('WP_POST_REVISIONS')) { define('WP_POST_REVISIONS', 5); }
-
 
 // http://www.deluxeblogtips.com/2011/01/remove-dashboard-widgets-in-wordpress.html
 add_action('admin_init', 'wpcleanup_remove_dashboard_widgets');
@@ -27,6 +22,7 @@ function wpcleanup_remove_dashboard_widgets() {
 	remove_meta_box('dashboard_recent_drafts', 'dashboard', 'normal');
 	remove_meta_box('dashboard_recent_comments', 'dashboard', 'normal');
 }
+
 
 add_filter('the_posts', 'enlighten_search_wp_query', 8);
 function enlighten_search_wp_query($args) {
@@ -64,7 +60,7 @@ function enlighten_p2p_template_handling($html, $connected, $ctype, $mode) {
 	$direction = $ctype->get_direction();
 	if (locate_template("p2p-$ctype->name.php") or locate_template("p2p-$ctype->name-$direction.php")) {
 		ob_start();
-		the_loop($connected->items, false);
+		enlighten_loop($connected->items, false);
 		get_template_part("p2p-$ctype->name", $direction);
 		return ob_get_clean();
 	}

@@ -3,7 +3,7 @@
 Plugin Name: Enlighten
 Plugin URI: https://github.com/funkjedi/enlighten
 Description: Wordpress optimizations and useful template tags and shortcodes
-Version: 0.1.2
+Version: 0.1.3
 Author: Tim Robertson
 Author URI: http://funkjedi.com/
 License: MIT
@@ -15,7 +15,6 @@ require dirname(__FILE__) . '/shortcodes.php';
 require dirname(__FILE__) . '/widgets.php';
 require dirname(__FILE__) . '/vendor/bootstrap.php';
 require dirname(__FILE__) . '/vendor/rawr.php';
-require dirname(__FILE__) . '/vendor/wpformhelper.php';
 
 
 // allow Advanced Custom Fields and Custom Post Type Switcher to work together
@@ -34,58 +33,90 @@ function enlighten_acf_load_value($value) {
 }
 
 
-add_filter('style_loader_src', 'wp_enqueue_style_libraries', 10, 2);
-function wp_enqueue_style_libraries($src, $handle) {
-	if (stripos($src, '.css') === strlen($src) - 4) {
+
+add_filter('style_loader_src', 'enlighten_style_loader_src', 10, 2);
+function enlighten_style_loader_src($src, $handle) {
+	global $wp_styles;
+
+	// quick check for scss stylesheets
+	if (strpos($src, '.scss') === false) {
 		return $src;
 	}
-	$path = pathinfo(parse_url($src, PHP_URL_PATH));
-	if (in_array( $path['extension'], array('less','sass','scss') )) {
-		$upload_dir = wp_upload_dir();
 
-		// build file paths for stylesheets
-		$in = "$_SERVER[DOCUMENT_ROOT]$path[dirname]/$path[basename]"; $filename = "$path[filename].$path[extension]." . substr(sha1($in), -8) . ".css";
-		$out = "$upload_dir[basedir]/$filename";
+	// wp_enqueue_style automatically appends base_url the src
+	$in = preg_replace("|^{$wp_styles->base_url}|i", "", $src);
 
-		switch ($path['extension']) {
-
-			// compile less files
-			case 'less':
-				try {
-					require_once dirname(__FILE__) . '/vendor/lessc.php';
-					$less = new lessc();
-					$less->checkedCompile($in, $out);
-				}
-				catch (Exception $e) {
-					print '<!-- ' . $e->getMessage() . ' -->';
-					return $src;
-				}
-				break;
-
-
-			// compile scss files
-			case 'scss':
-				try {
-					require_once dirname(__FILE__) . '/vendor/scssphp/scss.inc.php';
-					$parser = new scssc();
-					$parser->setImportPaths("$_SERVER[DOCUMENT_ROOT]$path[dirname]");
-					$parser->registerFunction("asset-url", create_function('$a', 'return "url(" . get_template_directory_uri() . "/" . $a[0][2][0][2][0] . ")";'));
-
-					if (!is_file($out) || filemtime($in) > filemtime($out)) {
-						$data = file_get_contents($in);
-						file_put_contents($out, $parser->compile($data));
-					}
-				}
-				catch (Exception $e) {
-					print '<!-- ' . $e->getMessage() . ' -->';
-					return $src;
-				}
-				break;
-
-		}
-
-		return $upload_dir['baseurl'] . '/' . $filename . '?' . time();
+	// remaining http/https urls are external and should be untouched
+	if (preg_match('|^(https?:)?//|', $in)) {
+		return $src;
 	}
 
-	return $src;
+	$parts = parse_url($in);
+	$paths = pathinfo($parts['path']);
+
+	// allow scss stylesheets should be compiled
+	if ($paths['extension'] !== 'scss') {
+		return $src;
+	}
+
+	$upload_dir = wp_upload_dir();
+	$in = $parts['path'];
+	$out = $upload_dir['basedir'] . '/' . $paths['filename'] . '.css';
+
+	// construct a complete path
+	if (strpos($in, '/') === 0) {
+		$in = $_SERVER['DOCUMENT_ROOT'] . $in;
+	}
+	else {
+		$in = get_stylesheet_directory() . '/' . $in;
+	}
+
+	// setup scssc parser
+	require_once dirname(__FILE__) . '/vendor/scssphp/scss.inc.php';
+	$parser = new scssc();
+	$parser->setImportPaths(dirname($in));
+	$parser->registerFunction('theme_url', 'enlighten_scss_function_theme_url');
+	$parser->registerFunction('get_option', 'enlighten_scss_function_get_option');
+
+	if (!is_file($out) || filemtime($in) > filemtime($out)) {
+		try {
+			$data = file_get_contents($in);
+			file_put_contents($out, $parser->compile($data));
+		}
+		catch (Exception $e) {
+			enlighten_log($e->getMessage());
+			return $src;
+		}
+	}
+
+	return $upload_dir['baseurl'] . '/' . $paths['filename'] . '.css?' . $parts['query'];
+}
+
+function enlighten_scss_function_theme_url($value) {
+	return 'url(' . get_theme_url($value[0][2][0][2][0]) . ')';
+}
+
+function enlighten_scss_function_get_option($value) {
+	$option = get_option($value[0][2][0], "");
+
+	// cast color values to scss colors
+	if (preg_match('/^\s*(#([0-9a-f]{6})|#([0-9a-f]{3}))\s*$/Ais', $option, $matches)) {
+		$color = array('color');
+		if (isset($matches[3])) {
+			$num = $matches[3];
+			$width = 16;
+		} else {
+			$num = $matches[2];
+			$width = 256;
+		}
+		$num = hexdec($num);
+		foreach (array(3,2,1) as $i) {
+			$t = $num % $width;
+			$num /= $width;
+			$color[$i] = $t * (256/$width) + $t * floor(16/$width);
+		}
+		$option = $color;
+	}
+
+	return $option;
 }
