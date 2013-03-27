@@ -73,6 +73,14 @@ class Enlighten_Loop {
         $this->current_post = -1;
         setup_postdata($GLOBALS['post'] = $this->original_post);
     }
+    function the_pagination(array $args = array()) {
+        print bootstrap_paginate_links(array_merge(array(
+            'base'    => str_replace(999999999, '%#%', get_pagenum_link(999999999)),
+            'format'  => '?paged=%#%',
+            'current' => max(1, get_query_var('paged')),
+            'total'   => $this->max_num_pages
+        ), $args));
+    }
 }
 
 function enlighten_loop($args = null) {
