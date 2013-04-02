@@ -25,3 +25,18 @@ function enlighten_shortcode__load_template($atts) {
 	get_template_part($name);
 	return ob_get_clean();
 }
+
+add_shortcode('site_url','enlighten_shortcode__site_url');
+function enlighten_shortcode__site_url($atts) {
+    $url = "";
+    if (isset($atts[0])) {
+    	$url = $atts[0];
+    }
+    return site_url($url);
+}
+
+add_shortcode('permalink','enlighten_shortcode__permalink');
+function enlighten_shortcode__permalink($atts) {
+    extract(shortcode_atts(array('id' => 0), $atts));
+    return get_permalink($id);
+}
