@@ -15,6 +15,7 @@ require dirname(__FILE__) . '/shortcodes.php';
 require dirname(__FILE__) . '/widgets.php';
 require dirname(__FILE__) . '/vendor/bootstrap.php';
 require dirname(__FILE__) . '/vendor/rawr.php';
+require dirname(__FILE__) . '/vendor/wordpress-timthumb-alternative.php';
 
 
 // allow Advanced Custom Fields and Custom Post Type Switcher to work together
