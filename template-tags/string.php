@@ -1,5 +1,17 @@
 <?php
 
+function coalesce() {
+    $args = func_get_args();
+    foreach ($args as $arg) {
+        if (!empty($arg)) return $arg;
+    }
+}
+
+function the_coalesce() {
+    $args = func_get_args();
+    print call_user_func_array('coalesce', $args);
+}
+
 function get_youtube_id($url) {
     $matches = array();
     preg_match('#(?<=(?:v|i)=)[a-zA-Z0-9-]+(?=&)|(?<=(?:v|i)\/)[^&\n]+|(?<=embed\/)[^"&\n]+|(?<=(?:v|i)=)[^&\n]+|(?<=youtu.be\/)[^&\n]+#i', $url, $matches);
