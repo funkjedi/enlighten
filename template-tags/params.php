@@ -60,7 +60,7 @@ function the_param_has_error($key) {
 	}
 }
 
-function param_required($key, $message) {
+function param_required($key, $message = 'Required') {
 	global $enlighten_param_errors;
 	if (!isset($_REQUEST[$key]) or empty($_REQUEST[$key])) {
 		$enlighten_param_errors[$key] = apply_filters('enlighten_param_error', $message, $key);
