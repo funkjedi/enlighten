@@ -68,6 +68,21 @@ function enlighten_p2p_template_handling($html, $connected, $ctype, $mode) {
 }
 
 
+// cleanup some of the mess added by qTranslate
+add_action('admin_menu', 'enlighten_qtranslate_admin_menu', 999);
+remove_action('admin_menu', 'qtrans_adminMenu');
+function enlighten_qtranslate_admin_menu() {
+	if (function_exists('qtrans_adminMenu')) {
+		add_options_page('Language Management', 'Languages', 'manage_options', 'qtranslate', 'qtranslate_conf');
+	}
+}
+
+add_filter('qtranslate_header_css', 'enlighten_qtranslate_header_css');
+function enlighten_qtranslate_header_css($text) {
+	return '';
+}
+
+
 // Helper function for providing "first" and "last" classes to the menu walker
 function enlighten_get_menu_order($item, $args, $which = 'first') {
 	static $cache = array('first' => array(), 'last' => array());
