@@ -1,5 +1,10 @@
 <?php
 
+function the_snippet($num_words = 55, $more = '[...]') {
+    $excerpt = get_the_excerpt();
+    echo wp_trim_words($excerpt, $num_words, $more);
+}
+
 function add_post_thumbnail($name, $id, $post_types = array('page', 'post')) {
     if (class_exists('MultiPostThumbnails')) {
         foreach ($post_types as $post_type) {
@@ -30,6 +35,15 @@ function the_post_thumbnail_src($size = 'full', $background_image = false, $mult
         echo $background_image ? "background-image: url({$image[0]});" : $image[0];
     }
 }
+
+function the_post_thumbnail_resize($width = null, $height = null, $multi_post_thumbnail = '') {
+    if ($image = wp_get_attachment_image_src(has_post_thumbnail_src($multi_post_thumbnail), 'full')) {
+        $image = matthewruddy_image_resize($image[0], $width, $height);
+        echo $image['url'];
+    }
+}
+
+
 
 function the_post_thumbnail_caption($multi_post_thumbnail = '') {
     if ($attachmentID = has_post_thumbnail_src($multi_post_thumbnail)) {
@@ -85,8 +99,13 @@ class Enlighten_Loop {
 
 function enlighten_loop($args = null) {
     if (isset($args)) {
+        // use get_post()
+        if (is_numeric($args)) {
+            $args = get_post($args);
+            $loop = new Enlighten_Loop(array($args));
+        }
         // use existing an WP_Query
-        if (is_object($args) and get_class($args) === 'WP_Query') {
+        elseif (is_object($args) and get_class($args) === 'WP_Query') {
             $loop = new Enlighten_Loop($args->posts, $args->max_num_pages);
         }
         // check for an existing array of posts
