@@ -10,7 +10,10 @@ function mdetect($method) {
 }
 
 function get_theme_url($path) {
-    return get_template_directory_uri() . '/' . ltrim($path, '/');
+    $url = get_template_directory_uri() . '/' . ltrim($path, '/');
+    return strtr($url, array(
+        '{locale}' => function_exists('qtrans_getLanguage') ? qtrans_getLanguage() : '',
+    ));
 }
 
 function the_theme_url($path) {
