@@ -69,8 +69,11 @@ function enlighten_p2p_template_handling($html, $connected, $ctype, $mode) {
 
 
 // cleanup some of the mess added by qTranslate
+add_action('init', 'enlighten_qtranslate_disable_admin_menu');
+function enlighten_qtranslate_disable_admin_menu() {
+	remove_action('admin_menu', 'qtrans_adminMenu');
+}
 add_action('admin_menu', 'enlighten_qtranslate_admin_menu', 999);
-remove_action('admin_menu', 'qtrans_adminMenu');
 function enlighten_qtranslate_admin_menu() {
 	if (function_exists('qtrans_adminMenu')) {
 		add_options_page('Language Management', 'Languages', 'manage_options', 'qtranslate', 'qtranslate_conf');
