@@ -1,7 +1,6 @@
 {
     "name": "funkjedi/enlighten",
     "require": {
-        "php": "^5.4",
         "swiftmailer/swiftmailer": "^5.4",
         "yahnis-elsts/plugin-update-checker": "^3.1",
         "ernix/lettercase": "^1.0",
@@ -11,7 +10,7 @@
         "files": [
             "src/Support/helpers.php",
             "src/Support/template-tags.php",
-            "vendor/yahnis-elsts/plugin-update-checker/plugin-update-checker.php"
+            "../../yahnis-elsts/plugin-update-checker/plugin-update-checker.php"
         ],
         "psr-4": {
             "Enlighten\\": "src/"
