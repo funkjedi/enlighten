@@ -9,7 +9,7 @@ function get_theme_dir($path){
 }
 
 function get_theme_url($path){
-	return get_stylesheet_directory_uri() . '/' . ltrim($path, '/');
+	return trans(get_stylesheet_directory_uri() . '/' . ltrim($path, '/'));
 }
 
 function the_theme_url($path){
@@ -63,7 +63,7 @@ function trans($text = '', $alt = ''){
 			$text = $text[0];
 		}
 	}
-	return strtr(__($text), array('{locale}' => $locale));
+	return strtr(__($text), apply_filters('trans_token', array('{locale}' => $locale), $locale));
 }
 
 if (!function_exists('t')):

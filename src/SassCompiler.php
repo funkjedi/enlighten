@@ -44,11 +44,8 @@ class SassCompiler
 			return $src;
 		}
 
-		// Convert site URLs to absolute paths
-		$in = preg_replace('/^' . preg_quote(home_url(), '/') . '/i', '', $src);
-
 		// Ignore SCSS from CDNs, other domains and relative paths
-		if (preg_match('#^//#', $in) || strpos($in, '/') !== 0) {
+		if ($_SERVER['HTTP_HOST'] !== $url['host'] || strpos($pathinfo['dirname'], '/') !== 0) {
 			return $src;
 		}
 
