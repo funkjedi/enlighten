@@ -3,6 +3,7 @@
 namespace Enlighten\Foundation;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 abstract class Action
 {
@@ -20,6 +21,11 @@ abstract class Action
 	 * @var \Symfony\Component\HttpFoundation\Request
 	 */
 	protected static $request;
+
+	/**
+	 * @var \Symfony\Component\HttpFoundation\Session\Session
+	 */
+	protected static $session;
 
 	/**
 	 * Handle an ajax request.
@@ -46,7 +52,22 @@ abstract class Action
 	 */
 	public function request($key, $default = null)
 	{
+		if (is_null($key)) {
+			return self::$request;
+		}
+
 		return self::$request->request->filter($key, $default, FILTER_SANITIZE_STRING);
+	}
+
+	/**
+	 * Retrieve a QUERY varaiable.
+	 *
+	 * @param string
+	 * @return mixed
+	 */
+	public function query($key)
+	{
+		return self::$request->query->get($key);
 	}
 
 	/**
@@ -58,6 +79,44 @@ abstract class Action
 	public function file($key)
 	{
 		return self::$request->files->get($key);
+	}
+
+	/**
+	 * Retrieve a SERVER varaiable.
+	 *
+	 * @param string
+	 * @return mixed
+	 */
+	public function server($key)
+	{
+		return self::$request->server->get($key);
+	}
+
+	/**
+	 * Retrieve a SERVER varaiable.
+	 *
+	 * @param string
+	 * @return mixed
+	 */
+	public function session($key)
+	{
+		if (!self::$session) {
+			self::$session = new Session;
+			self::$session->start();
+		}
+
+		if (is_array($key)) {
+			foreach ($key as $k => $v) {
+				self::$session->set($k, $v);
+			}
+			return;
+		}
+
+		if (is_null($key)) {
+			return self::$session;
+		}
+
+		return self::$session->get($key);
 	}
 
 	/**
