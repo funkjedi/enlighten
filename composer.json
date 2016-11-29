@@ -4,7 +4,8 @@
         "swiftmailer/swiftmailer": "^5.4",
         "yahnis-elsts/plugin-update-checker": "^3.1",
         "ernix/lettercase": "^1.0",
-        "leafo/scssphp": "^0.6.6"
+        "leafo/scssphp": "^0.6.6",
+        "symfony/http-foundation": "^3.1"
     },
     "autoload": {
         "files": [

@@ -2,6 +2,8 @@
 
 namespace Enlighten\Foundation;
 
+use Symfony\Component\HttpFoundation\Request;
+
 abstract class Action
 {
 	/**
@@ -15,6 +17,11 @@ abstract class Action
 	protected $action = null;
 
 	/**
+	 * @var \Symfony\Component\HttpFoundation\Request
+	 */
+	protected static $request;
+
+	/**
 	 * Handle an ajax request.
 	 *
 	 * @return void
@@ -26,7 +33,9 @@ abstract class Action
 	 */
 	public function __construct()
 	{
-		// $this->registerActionHandler();
+		if (!self::$request) {
+			self::$request = Request::createFromGlobals();
+		}
 	}
 
 	/**
@@ -37,13 +46,18 @@ abstract class Action
 	 */
 	public function request($key, $default = null)
 	{
-		$value = filter_input(INPUT_POST, $key, FILTER_SANITIZE_STRING);
+		return self::$request->request->filter($key, $default, FILTER_SANITIZE_STRING);
+	}
 
-		if (is_null($default) === false && empty($value)) {
-			return $default;
-		}
-
-		return $value;
+	/**
+	 * Retrieve a FILE varaiable.
+	 *
+	 * @param string
+	 * @return \Symfony\Component\HttpFoundation\File|null
+	 */
+	public function file($key)
+	{
+		return self::$request->files->get($key);
 	}
 
 	/**
@@ -88,9 +102,9 @@ abstract class Action
 	 *
 	 * @param mixed
 	 */
-	public function error($content)
+	public function error($content, $status = 400)
 	{
-		return $this->json(array('error' => $content), 500);
+		return $this->json(array('error' => $content), $status);
 	}
 
 	/**
@@ -140,7 +154,7 @@ abstract class Action
 			return $this->action;
 		}
 
-		$action = preg_replace('/^Enlighten\\\\Ajax\\\\(.+)Action$/u', '$1', get_class($this));
+		$action = preg_replace('/^.+\\\\Ajax\\\\(.+)Action$/u', '$1', get_class($this));
 		$action = strtolower(preg_replace('/(?<!^)([A-Z])/u', '_$1', str_replace('\\','',$action)));
 
 		return sanitize_key($action);

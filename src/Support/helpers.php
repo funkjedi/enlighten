@@ -9,15 +9,9 @@ function enlighten_get_option($group, $name, $default = null){
 	return $default;
 }
 
-function enlighten_register_ajax(array $handlers){
-	foreach ($handlers as $handler) {
-		if ($handler instanceof \Enlighten\Foundation\Action) {
-			$action = $handler->getAction();
-			add_action("wp_ajax_{$action}", array($handler, 'handle'));
-			if ($handler->isPublic()) {
-				add_action("wp_ajax_nopriv_{$action}", array($handler, 'handle'));
-			}
-		}
+function enlighten_register_ajax(array $actions){
+	foreach ($actions as $action) {
+		$action->registerActionHandler();
 	}
 }
 

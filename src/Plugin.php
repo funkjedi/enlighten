@@ -17,11 +17,6 @@ class Plugin
 
 		add_action('init', array($this, 'whitelistIpAddresses'));
 
-		// Register ajax handlers
-		foreach (apply_filters('enlighten_ajax_actions', array()) as $action) {
-			$action->registerActionHandler();
-		}
-
 		//$this->checkForUpgrade();
 	}
 
