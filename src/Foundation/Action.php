@@ -5,7 +5,7 @@ namespace Enlighten\Foundation;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 
-abstract class Action
+class Action
 {
 	/**
 	 * @var boolean
@@ -32,14 +32,17 @@ abstract class Action
 	 *
 	 * @return void
 	 */
-	abstract public function handle();
+	public function handle()
+	{
+		//
+	}
 
 	/**
 	 * Create an instance.
 	 */
 	public function __construct()
 	{
-
+		//
 	}
 
 	/**
@@ -62,7 +65,7 @@ abstract class Action
 	 *
 	 * @return \Symfony\Component\HttpFoundation\Request
 	 */
-	public function static getRequest()
+	public static function getRequest()
 	{
 		if (!self::$request) {
 			self::$request = Request::createFromGlobals();
@@ -79,7 +82,7 @@ abstract class Action
 	 */
 	public function query($key)
 	{
-		return self::$request->query->get($key);
+		return self::getRequest()->query->get($key);
 	}
 
 	/**
@@ -90,7 +93,7 @@ abstract class Action
 	 */
 	public function file($key)
 	{
-		return self::$request->files->get($key);
+		return self::getRequest()->files->get($key);
 	}
 
 	/**
@@ -101,7 +104,7 @@ abstract class Action
 	 */
 	public function server($key)
 	{
-		return self::$request->server->get($key);
+		return self::getRequest()->server->get($key);
 	}
 
 	/**
@@ -131,7 +134,7 @@ abstract class Action
 	 *
 	 * @return \Symfony\Component\HttpFoundation\Session
 	 */
-	public function static getSession()
+	public static function getSession()
 	{
 		if (!self::$session) {
 			self::$session = new Session;
@@ -253,19 +256,5 @@ abstract class Action
 		$action = strtolower(preg_replace('/(?<!^)([A-Z])/u', '_$1', str_replace('\\','',$action)));
 
 		return sanitize_key($action);
-	}
-
-	/**
-	 * Register handler with Wordpress.
-	 */
-	public function registerActionHandler()
-	{
-		$action = $this->getActionName();
-
-		add_action("wp_ajax_{$action}", array($this, 'handle'));
-
-		if ($this->isPublic()) {
-			add_action("wp_ajax_nopriv_{$action}", array($this, 'handle'));
-		}
 	}
 }

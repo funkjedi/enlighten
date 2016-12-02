@@ -10,9 +10,7 @@ function enlighten_get_option($group, $name, $default = null){
 }
 
 function enlighten_register_ajax(array $actions){
-	foreach ($actions as $action) {
-		$action->registerActionHandler();
-	}
+	\Enlighten\Foundation\Dispatcher::getInstance($actions);
 }
 
 
