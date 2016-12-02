@@ -161,8 +161,22 @@ abstract class Action
 	 *
 	 * @param mixed
 	 */
+	public function success($content = '', $status = 200)
+	{
+		return $this->json(array('success' => true, 'data' => $content), $status);
+	}
+
+	/**
+	 * Send an HTTP response.
+	 *
+	 * @param mixed
+	 */
 	public function error($content, $status = 400)
 	{
+		if (is_a($content, 'Exception')) {
+			$content = $content->getMessage();
+		}
+
 		return $this->json(array('error' => $content), $status);
 	}
 
