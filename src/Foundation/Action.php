@@ -39,9 +39,7 @@ abstract class Action
 	 */
 	public function __construct()
 	{
-		if (!self::$request) {
-			self::$request = Request::createFromGlobals();
-		}
+
 	}
 
 	/**
@@ -53,10 +51,24 @@ abstract class Action
 	public function request($key, $default = null)
 	{
 		if (is_null($key)) {
-			return self::$request;
+			return self::getRequest();
 		}
 
-		return self::$request->request->filter($key, $default, FILTER_SANITIZE_STRING);
+		return self::getRequest()->request->filter($key, $default, FILTER_SANITIZE_STRING);
+	}
+
+	/**
+	 * Retrieve the request.
+	 *
+	 * @return \Symfony\Component\HttpFoundation\Request
+	 */
+	public function static getRequest()
+	{
+		if (!self::$request) {
+			self::$request = Request::createFromGlobals();
+		}
+
+		return self::$request;
 	}
 
 	/**
@@ -100,23 +112,33 @@ abstract class Action
 	 */
 	public function session($key)
 	{
-		if (!self::$session) {
-			self::$session = new Session;
-			self::$session->start();
-		}
-
 		if (is_array($key)) {
 			foreach ($key as $k => $v) {
-				self::$session->set($k, $v);
+				self::getSession()->set($k, $v);
 			}
 			return;
 		}
 
 		if (is_null($key)) {
-			return self::$session;
+			return self::getSession();
 		}
 
-		return self::$session->get($key);
+		return self::getSession()->get($key);
+	}
+
+	/**
+	 * Retrieve the session.
+	 *
+	 * @return \Symfony\Component\HttpFoundation\Session
+	 */
+	public function static getSession()
+	{
+		if (!self::$session) {
+			self::$session = new Session;
+			self::$session->start();
+		}
+
+		return self::$session;
 	}
 
 	/**
