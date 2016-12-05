@@ -34,6 +34,8 @@ class View
 
 	/**
 	 * Get the path to the view.
+	 *
+	 * @return string
 	 */
 	public function getViewPath()
 	{
@@ -46,6 +48,8 @@ class View
 
 	/**
 	 * Render view and return as a string.
+	 *
+	 * @return string
 	 */
 	public function render()
 	{
@@ -55,5 +59,15 @@ class View
 		include $this->getViewPath();
 
 		return ob_get_clean();
+	}
+
+	/**
+	 * Render view and return as a string.
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->render();
 	}
 }
