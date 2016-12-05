@@ -13,6 +13,10 @@ function enlighten_register_ajax(array $actions){
 	\Enlighten\Foundation\Dispatcher::getInstance($actions);
 }
 
+function enlighten_view($name, array $data = array()){
+	return new \Enlighten\Foundation\View($name, $data);
+}
+
 
 if (!function_exists('dd')):
 	function dd(){
