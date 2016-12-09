@@ -6,6 +6,7 @@ use BadMethodCallException;
 use Enlighten\Application;
 use Enlighten\Http\Ajax\Action;
 use Illuminate\Contracts\Http\Kernel as KernelContract;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
@@ -71,9 +72,7 @@ class Kernel implements KernelContract
 	 */
 	public function bootstrap()
 	{
-		if (! $this->app->hasBeenBootstrapped()) {
-			$this->app->bootstrapWith($this->bootstrappers());
-		}
+		$this->app->boot();
 	}
 
 	/**

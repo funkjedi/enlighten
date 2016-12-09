@@ -5,7 +5,10 @@ namespace Enlighten\Http;
 use Enlighten\Application;
 use Enlighten\View\View;
 use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use JsonSerializable;
 
 class Controller
 {
@@ -113,29 +116,40 @@ class Controller
 	 */
 	public function response($content = '', $status = 200, array $headers = [])
 	{
-		$factory = $this->app->make(ResponseFactory::class);
-
-		if (func_num_args() === 0) {
-			return $factory;
-		}
-
-		return $factory->make($content, $status, $headers);
+		return new Response($content, $status, $headers);
 	}
 
 	/**
-	 * Return a new JSON response.
+	 * Return a new JSON response from the application.
 	 *
-	 * @param string
-	 * @param int
-	 * @param array
-	 * @return \Symfony\Component\HttpFoundation\Response|\Illuminate\Contracts\Routing\ResponseFactory
+	 * @param  string|array
+	 * @param  int
+	 * @param  array
+	 * @param  int
+	 * @return \Illuminate\Http\JsonResponse
 	 */
-	public function json($content, $status = 200, array $headers = [])
+	public function json($data = [], $status = 200, array $headers = [], $options = 0)
 	{
-		$response = $this->response($content, $status, $headers);
-		$response->header('Content-Type', 'application/json');
+		if ($data instanceof Arrayable && ! $data instanceof JsonSerializable) {
+			$data = $data->toArray();
+		}
 
-		return $response;
+		return new JsonResponse($data, $status, $headers, $options);
+	}
+
+	/**
+	 * Return a new JSONP response from the application.
+	 *
+	 * @param  string
+	 * @param  string|array
+	 * @param  int
+	 * @param  array
+	 * @param  int
+	 * @return \Illuminate\Http\JsonResponse
+	 */
+	public function jsonp($callback, $data = [], $status = 200, array $headers = [], $options = 0)
+	{
+		return $this->json($data, $status, $headers, $options)->setCallback($callback);
 	}
 
 	/**
