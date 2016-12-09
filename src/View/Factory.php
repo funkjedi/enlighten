@@ -25,6 +25,8 @@ class Factory implements FactoryContract
 	 */
 	protected function getFilePath($view)
 	{
+		$view = strtr($view, '.', '/');
+
 		return locate_template([
 			"backend/views/{$view}.php",
 			"views/{$view}.php",

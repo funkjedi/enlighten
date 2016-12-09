@@ -12,9 +12,10 @@ class Plugin
 	/**
 	 * Create an instance.
 	 */
-	public function __construct()
+	public function __construct($basePath = null)
 	{
-		$this->app = new Application;
+		$this->app = new Application($basePath);
+		$this->app['router'];
 
 		$this->checkForUpgrade();
 

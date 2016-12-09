@@ -212,6 +212,6 @@ class Controller
 	 */
 	public function view($name, array $data = array())
 	{
-		return $this->view->make($name, $data);
+		return $this->app->view->make($name, $data);
 	}
 }

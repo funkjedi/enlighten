@@ -6,6 +6,7 @@
         "illuminate/events": "5.0.*",
         "jenssegers/model": "^1.1",
         "leafo/scssphp": "^0.6.6",
+        "symfony/var-dumper": "2.8.*",
         "swiftmailer/swiftmailer": "^5.4",
         "tareq1988/wp-eloquent": "dev-master"
     },

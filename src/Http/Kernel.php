@@ -6,6 +6,7 @@ use BadMethodCallException;
 use Enlighten\Application;
 use Enlighten\Http\Ajax\Action;
 use Illuminate\Contracts\Http\Kernel as KernelContract;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
@@ -83,7 +84,41 @@ class Kernel implements KernelContract
 	 */
 	public function handle($request)
 	{
-		//
+		global $wp;
+
+		try {
+			$params = explode('|', $wp->query_vars['enlighten_route']);
+
+			if (count($params) < 2) {
+				throw new NotFoundHttpException;
+			}
+
+			$controller = 'App\\Http\\Controllers\\'.array_shift($params);
+
+			if (! class_exists($controller)) {
+				throw new NotFoundHttpException;
+			}
+
+			$action = array_shift($params);
+
+			if (! method_exists($controller, $action)) {
+				throw new NotFoundHttpException;
+			}
+
+			$this->bootstrap();
+			$response = call_user_func_array([$this->app->make($controller), $action], $params);
+		}
+		catch (ModelNotFoundException $e) {
+			$response = $this->respondWith404();
+		}
+		catch (NotFoundHttpException $e) {
+			$response = $this->respondWith404();
+		}
+		catch (Exception $e) {
+			$response = $action->error($e);
+		}
+
+		return $this->prepareResponse($request, $response);
 	}
 
 	/**
@@ -98,9 +133,14 @@ class Kernel implements KernelContract
 		try {
 			$this->bootstrap();
 			$response = $action->handle();
-		} catch (NotFoundHttpException $e) {
+		}
+		catch (ModelNotFoundException $e) {
 			$response = $this->respondWith404();
-		} catch (Exception $e) {
+		}
+		catch (NotFoundHttpException $e) {
+			$response = $this->respondWith404();
+		}
+		catch (Exception $e) {
 			$response = $action->error($e);
 		}
 

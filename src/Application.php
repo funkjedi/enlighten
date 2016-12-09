@@ -3,6 +3,7 @@
 namespace Enlighten;
 
 use Enlighten\Http\Kernel;
+use Enlighten\Http\Router;
 use Enlighten\Mail\Mailer;
 use Enlighten\View\Factory;
 use Illuminate\Container\Container;
@@ -109,6 +110,10 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
 		});
 
 		$this->instance('request', Request::capture());
+
+		$this->singleton('router', function($app){
+			return new Router($app);
+		});
 
 		$this->singleton('session', function($app){
 			$session = new Session;
