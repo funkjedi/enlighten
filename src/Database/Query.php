@@ -1,10 +1,10 @@
 <?php
 
-namespace Enlighten;
+namespace Enlighten\Database;
 
 use WP_Query;
 
-class Loop
+class Query
 {
 	/**
 	 * Create an instance.

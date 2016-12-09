@@ -1,6 +1,13 @@
 <?php
 
 
+function enlighten($make = null, $parameters = []){
+	if (is_null($make)) {
+		return \Enlighten\Application::getInstance();
+	}
+	return \Enlighten\Application::getInstance()->make($make, $parameters);
+}
+
 function enlighten_get_option($group, $name, $default = null){
 	$options = get_option("enlighten-options-{$group}");
 	if (isset($options[$name]) === true) {
@@ -10,11 +17,11 @@ function enlighten_get_option($group, $name, $default = null){
 }
 
 function enlighten_register_ajax(array $actions){
-	\Enlighten\Foundation\Dispatcher::getInstance($actions);
+	enlighten('kernel')->registerActions($actions);
 }
 
 function enlighten_view($name, array $data = array()){
-	return new \Enlighten\Foundation\View($name, $data);
+	return enlighten('view')->make($name, $data);
 }
 
 

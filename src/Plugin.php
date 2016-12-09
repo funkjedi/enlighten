@@ -5,19 +5,32 @@ namespace Enlighten;
 class Plugin
 {
 	/**
+	 * @var \Enlighten\Application
+	 */
+	protected $app;
+
+	/**
 	 * Create an instance.
 	 */
 	public function __construct()
 	{
-		new \Enlighten\Admin\Mailer;
-		new \Enlighten\Admin\Sass;
-		new \Enlighten\SassCompiler;
-		new \Enlighten\Shortcodes;
-		new \Enlighten\Widgets;
+		$this->app = new Application;
 
-		add_action('init', array($this, 'whitelistIpAddresses'));
+		$this->singleton(
+			'Illuminate\Contracts\Http\Kernel',
+			'Enlighten\Http\Kernel'
+		);
 
-		//$this->checkForUpgrade();
+		$this->checkForUpgrade();
+
+		add_action('init',         array($this, 'whitelistIpAddresses'));
+		add_action('widgets_init', array($this, 'registerWidgets'));
+
+		new \Enlighten\WP\SassCompiler;
+		new \Enlighten\WP\Shortcodes;
+
+		new \Enlighten\OptionPages\MailerPage;
+		new \Enlighten\OptionPages\SassPage;
 	}
 
 	/**
@@ -36,12 +49,19 @@ class Plugin
 	}
 
 	/**
+	 * Fires after all default WordPress widgets have been registered.
+	 */
+	public function registerWidgets()
+	{
+		register_widget('Enlighten\WP\Widgets\TemplateWidget');
+	}
+
+	/**
 	 * The library periodically checks the URL to see if there's a new version
 	 * available and displays an update notification to the user if necessary.
 	 */
 	public function checkForUpgrade()
 	{
-		$pucGitHubChecker = \PucFactory::getLatestClassVersion('PucGitHubChecker');
-		(new $pucGitHubChecker('https://github.com/funkjedi/enlighten/', __FILE__, 'master'));
+		//
 	}
 }

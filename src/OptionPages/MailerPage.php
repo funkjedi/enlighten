@@ -1,8 +1,8 @@
 <?php
 
-namespace Enlighten\Admin;
+namespace Enlighten\OptionPages;
 
-class Mailer
+class MailerPage
 {
 	/**
 	 * Create an instance.

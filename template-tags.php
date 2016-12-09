@@ -1,7 +1,7 @@
 <?php
 
 function get_query_loop($args = array()){
-	return \Enlighten\Loop::create($args);
+	return \Enlighten\Database\Query::create($args);
 }
 
 function get_theme_dir($path){

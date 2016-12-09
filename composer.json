@@ -1,17 +1,18 @@
 {
     "name": "funkjedi/enlighten",
     "require": {
-        "swiftmailer/swiftmailer": "^5.4",
-        "yahnis-elsts/plugin-update-checker": "^3.1",
-        "ernix/lettercase": "^1.0",
+        "php": ">=5.4.0",
+        "illuminate/http": "5.0.*",
+        "illuminate/events": "5.0.*",
+        "jenssegers/model": "^1.1",
         "leafo/scssphp": "^0.6.6",
-        "symfony/http-foundation": "^3.1"
+        "swiftmailer/swiftmailer": "^5.4",
+        "tareq1988/wp-eloquent": "dev-master"
     },
     "autoload": {
         "files": [
-            "src/Support/helpers.php",
-            "src/Support/template-tags.php",
-            "../../yahnis-elsts/plugin-update-checker/plugin-update-checker.php"
+            "src/helpers.php",
+            "template-tags.php"
         ],
         "psr-4": {
             "Enlighten\\": "src/"

@@ -1,30 +1,43 @@
 <?php
 
-namespace Enlighten;
+namespace Enlighten\Mail;
 
-use Enlighten\Foundation\View;
 use Enlighten\Foundation\Mail\LogTransport;
+use Enlighten\Foundation\View;
 use Exception;
+use Illuminate\Contracts\Mail\Mailer as MailerContract;
 use InvalidArgumentException;
 use Swift_Mailer;
 use Swift_MailTransport;
 use Swift_Message;
 use Swift_SmtpTransport;
 
-class Mailer
+class Mailer implements MailerContract
 {
+	/**
+	 * Send a new message when only a raw text part.
+	 *
+	 * @param string
+	 * @param \Closure|string
+	 * @return int
+	 */
+	public function raw($text, $callback)
+	{
+		return $this->send($text, [], $callback);
+	}
+
 	/**
 	 * Send a message.
 	 *
 	 * @param mixed
 	 * @param array
-	 * @param Closure|null
-	 * @return integer
+	 * @param \Closure|null
+	 * @return int
 	 */
-	public function send($html, $data = null, $callable = null)
+	public function send($html, $data = array(), $callback = null)
 	{
 		if (is_callable($data)) {
-			$callable = $data;
+			$callback = $data;
 			$data = array();
 		}
 
@@ -35,7 +48,7 @@ class Mailer
 			catch (InvalidArgumentException $e) {}
 		}
 
-		if ($callable && is_callable($callable) === false) {
+		if ($callback && is_callable($callback) === false) {
 			throw new InvalidArgumentException;
 		}
 
@@ -49,8 +62,8 @@ class Mailer
 		$message = Swift_Message::newInstance();
 		$message->setBody($html, 'text/html');
 
-		if ($callable) {
-			$callable($message);
+		if ($callback) {
+			$callback($message);
 		}
 
 		// If in Test Mode the set the recipient to the Test Mode recipients
@@ -68,8 +81,8 @@ class Mailer
 		// If no `From` has been set then set to the default
 		if (count($message->getFrom()) === 0) {
 			$message->setFrom(
-				enlighten_get_option('mailer', 'from_email') ?: get_option('admin_email')
-				enlighten_get_option('mailer', 'from_name')  ?: null,
+				enlighten_get_option('mailer', 'from_email') ?: get_option('admin_email'),
+				enlighten_get_option('mailer', 'from_name')  ?: null
 			);
 		}
 
@@ -132,5 +145,15 @@ class Mailer
 		}
 
 		return Swift_MailTransport::newInstance();
+	}
+
+	/**
+	 * Get the array of failed recipients.
+	 *
+	 * @return array
+	 */
+	public function failures()
+	{
+		return [];
 	}
 }

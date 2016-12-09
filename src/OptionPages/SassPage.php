@@ -1,8 +1,8 @@
 <?php
 
-namespace Enlighten\Admin;
+namespace Enlighten\OptionPages;
 
-class Sass
+class SassPage
 {
 	/**
 	 * Create an instance.

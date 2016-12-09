@@ -1,6 +1,6 @@
 <?php
 
-namespace Enlighten;
+namespace Enlighten\WP;
 
 class Shortcodes
 {

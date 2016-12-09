@@ -1,6 +1,6 @@
 <?php
 
-namespace Enlighten;
+namespace Enlighten\WP;
 
 use Exception;
 use Leafo\ScssPhp\Compiler;
