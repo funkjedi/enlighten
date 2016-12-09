@@ -15,10 +15,6 @@ class Plugin
 	public function __construct()
 	{
 		$this->app = new Application;
-		$this->app->singleton(
-			'Illuminate\Contracts\Http\Kernel',
-			'Enlighten\Http\Kernel'
-		);
 
 		$this->checkForUpgrade();
 

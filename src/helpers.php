@@ -17,7 +17,7 @@ function enlighten_get_option($group, $name, $default = null){
 }
 
 function enlighten_register_ajax(array $actions){
-	enlighten('Enlighten\Http\Kernel')->registerActions($actions);
+	enlighten('kernel')->registerActions($actions);
 }
 
 function enlighten_view($name, array $data = array()){

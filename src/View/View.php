@@ -51,7 +51,6 @@ class View implements ArrayAccess, ViewContract
 	{
 		$this->view = $view;
 		$this->path = $path;
-		$this->engine = $engine;
 		$this->factory = $factory;
 
 		$this->data = $data instanceof Arrayable ? $data->toArray() : (array) $data;
@@ -67,7 +66,7 @@ class View implements ArrayAccess, ViewContract
 		ob_start();
 
 		extract($this->data, EXTR_SKIP);
-		include $this->getViewPath();
+		include $this->path;
 
 		return ob_get_clean();
 	}
