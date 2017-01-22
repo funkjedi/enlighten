@@ -90,6 +90,17 @@ class View implements ArrayAccess, ViewContract
 	}
 
 	/**
+	 * Add a partial to the view.
+	 *
+	 * @param  string  $name
+	 * @param  array   $data
+	 */
+	public function partial($name, array $data = array())
+	{
+		echo $this->factory->make($name, $data)->render();
+	}
+
+	/**
 	 * Get the view factory instance.
 	 *
 	 * @return \Illuminate\View\Factory

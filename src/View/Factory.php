@@ -3,6 +3,7 @@
 namespace Enlighten\View;
 
 use Illuminate\Contracts\View\Factory as FactoryContract;
+use InvalidArgumentException;
 
 class Factory implements FactoryContract
 {
@@ -22,16 +23,24 @@ class Factory implements FactoryContract
 	 *
 	 * @param string
 	 * @return string
+	 *
+	 * @throws \InvalidArgumentException
 	 */
-	protected function getFilePath($view)
+	protected function getFilePath($name)
 	{
-		$view = strtr($view, '.', '/');
+		$view = strtr($name, '.', '/');
 
-		return locate_template([
+		$path = locate_template([
 			"backend/views/{$view}.php",
 			"views/{$view}.php",
 			"{$view}.php",
 		]);
+
+		if (empty($path)) {
+			throw new InvalidArgumentException("View [$name] not found.");
+		}
+
+		return $path;
 	}
 
 	/**
