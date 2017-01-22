@@ -38,6 +38,13 @@ class Router
 		if (file_exists($routes)) {
 			include $routes;
 		}
+
+		$hash = sha1_file($routes);
+
+		if (get_option('englighten_routes_hash') !== $hash) {
+			update_option('englighten_routes_hash', $hash);
+			flush_rewrite_rules();
+		}
 	}
 
 	/**
