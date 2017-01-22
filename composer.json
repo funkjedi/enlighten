@@ -1,14 +1,19 @@
 {
     "name": "funkjedi/enlighten",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/funkjedi/wp-eloquent"
+        }
+    ],
     "require": {
         "php": ">=5.4.0",
         "illuminate/http": "5.0.*",
         "illuminate/events": "5.0.*",
         "jenssegers/model": "^1.1",
-        "leafo/scssphp": "^0.6.6",
         "symfony/var-dumper": "2.8.*",
         "swiftmailer/swiftmailer": "^5.4",
-        "tareq1988/wp-eloquent": "dev-master"
+        "tareq1988/wp-eloquent": "dev-feature-capsule"
     },
     "autoload": {
         "files": [

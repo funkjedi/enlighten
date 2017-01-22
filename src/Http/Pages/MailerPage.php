@@ -1,8 +1,8 @@
 <?php
 
-namespace Enlighten\OptionPages;
+namespace Enlighten\Pages;
 
-class MailerPage
+class MailerPage extends Page
 {
 	/**
 	 * Create an instance.

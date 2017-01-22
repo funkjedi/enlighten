@@ -5,7 +5,7 @@ namespace Enlighten\Http\Ajax;
 use Enlighten\Http\Controller;
 use Illuminate\Support\Str;
 
-class Action extends Controller
+abstract class Action extends Controller
 {
 	/**
 	 * @var boolean
@@ -15,17 +15,14 @@ class Action extends Controller
 	/**
 	 * @var string
 	 */
-	protected $action = null;
+	protected $action;
 
 	/**
 	 * Handle an ajax request.
 	 *
 	 * @return void
 	 */
-	public function handle()
-	{
-		//
-	}
+	abstract public function handle();
 
 	/**
 	 * Whether this action is public or only for authenticated users.

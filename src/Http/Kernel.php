@@ -67,6 +67,18 @@ class Kernel implements KernelContract
 	}
 
 	/**
+	 * Register handlers with Wordpress.
+	 *
+	 * @param array<\Enlighten\Http\Pages\Page>
+	 */
+	public function registerPages(array $pages = array())
+	{
+		foreach ($pages as $page) {
+			//
+		}
+	}
+
+	/**
 	 * Bootstrap the application for HTTP requests.
 	 *
 	 * @return void
@@ -74,6 +86,7 @@ class Kernel implements KernelContract
 	public function bootstrap()
 	{
 		$this->app->boot();
+		$this->app['router']->boot();
 	}
 
 	/**
