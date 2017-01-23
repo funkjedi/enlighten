@@ -78,9 +78,9 @@ abstract class Page extends Controller
 	{
 		if ($this->menuTitle) {
 			if ($this->parentSlug) {
-				add_submenu_page($this->parentSlug, $this->pageTitle, $this->menuTitle, $this->capability, $this->getSlug(), array($this, 'handle'));
+				add_submenu_page($this->parentSlug, $this->pageTitle, $this->menuTitle, $this->capability, $this->getSlug(), array($this, 'render'));
 			} else {
-				add_menu_page($this->pageTitle, $this->menuTitle, $this->capability, $this->getSlug(), array($this, 'handle'), $this->icon, $this->position);
+				add_menu_page($this->pageTitle, $this->menuTitle, $this->capability, $this->getSlug(), array($this, 'render'), $this->icon, $this->position);
 			}
 		}
 	}
@@ -94,9 +94,17 @@ abstract class Page extends Controller
 	}
 
 	/**
-	 * Render the options page.
+	 * Render the page.
 	 */
 	abstract public function handle();
+
+	/**
+	 * Render the page.
+	 */
+	public function render()
+	{
+		echo (string) $this->handle();
+	}
 
 	/**
 	 * Get the menu slug representing this page.
