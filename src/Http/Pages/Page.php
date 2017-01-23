@@ -22,18 +22,39 @@ abstract class Page extends Controller
 	protected $pageTitle = '';
 
 	/**
-	 * The text to be used for the menu.
+	 * The slug name to refer to this menu by.
 	 *
 	 * @string
 	 */
 	protected $menuTitle = '';
 
 	/**
-	 * The slug representing this page.
+	 * The slug name to refer to this menu by.
 	 *
 	 * @var string
 	 */
 	protected $slug = null;
+
+	/**
+	 * The slug name for the parent menu.
+	 *
+	 * @var string
+	 */
+	protected $parentSlug = null;
+
+	/**
+	 * The URL to the icon to be used for this menu..
+	 *
+	 * @var string
+	 */
+	protected $icon = '';
+
+	/**
+	 * The position in the menu order this one should appear..
+	 *
+	 * @var string
+	 */
+	protected $position = null;
 
 	/**
 	 * Create an instance.
@@ -56,7 +77,11 @@ abstract class Page extends Controller
 	public function registerPage()
 	{
 		if ($this->menuTitle) {
-			add_options_page($this->pageTitle, $this->menuTitle, $this->capability, $this->getSlug(), array($this, 'handle'));
+			if ($this->parentSlug) {
+				add_submenu_page($this->parentSlug, $this->pageTitle, $this->menuTitle, $this->capability, $this->getSlug(), array($this, 'handle'));
+			} else {
+				add_menu_page($this->pageTitle, $this->menuTitle, $this->capability, $this->getSlug(), array($this, 'handle'), $this->icon, $this->position);
+			}
 		}
 	}
 
@@ -74,7 +99,7 @@ abstract class Page extends Controller
 	abstract public function handle();
 
 	/**
-	 * Get the a slug representing this page.
+	 * Get the menu slug representing this page.
 	 *
 	 * @return string
 	 */
