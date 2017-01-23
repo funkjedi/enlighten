@@ -8,6 +8,13 @@ use Illuminate\Support\Str;
 abstract class Page extends Controller
 {
 	/**
+	 * The page's hook suffix, or false if the user does not have the capability required..
+	 *
+	 * @var string
+	 */
+	protected $hookSuffix = false;
+
+	/**
 	 * The capability required for this page's menu item to be displayed to the user.
 	 *
 	 * @var string
@@ -69,6 +76,7 @@ abstract class Page extends Controller
 
 		add_action('admin_menu', array($this, 'registerPage'));
 		add_action('admin_init', array($this, 'registerSettings'));
+		add_action('admin_enqueue_scripts', array($this, 'adminEnqueueScripts'));
 	}
 
 	/**
@@ -78,9 +86,24 @@ abstract class Page extends Controller
 	{
 		if ($this->menuTitle) {
 			if ($this->parentSlug) {
-				add_submenu_page($this->parentSlug, $this->pageTitle, $this->menuTitle, $this->capability, $this->getSlug(), array($this, 'render'));
+				$this->hookSuffix = add_submenu_page(
+					$this->parentSlug,
+					$this->pageTitle,
+					$this->menuTitle,
+					$this->capability,
+					$this->getSlug(),
+					array($this, 'render')
+				);
 			} else {
-				add_menu_page($this->pageTitle, $this->menuTitle, $this->capability, $this->getSlug(), array($this, 'render'), $this->icon, $this->position);
+				$this->hookSuffix = add_menu_page(
+					$this->pageTitle,
+					$this->menuTitle,
+					$this->capability,
+					$this->getSlug(),
+					array($this, 'render'),
+					$this->icon,
+					$this->position
+				);
 			}
 		}
 	}
@@ -89,6 +112,26 @@ abstract class Page extends Controller
 	 * Register settings and default fields.
 	 */
 	public function registerSettings()
+	{
+		//
+	}
+
+	/**
+	 * Enqueuing items that are meant to appear on the page.
+	 *
+	 * @var string
+	 */
+	public function adminEnqueueScripts($hookSuffix)
+	{
+		if ($this->hookSuffix === $hookSuffix) {
+			$this->enqueueScripts();
+		}
+	}
+
+	/**
+	 * Enqueuing items that are meant to appear on the page.
+	 */
+	public function enqueueScripts()
 	{
 		//
 	}

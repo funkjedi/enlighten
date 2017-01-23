@@ -10,11 +10,20 @@ class Plugin
 	protected $app;
 
 	/**
+	 * @var string
+	 */
+	protected $pluginFile;
+
+	/**
 	 * Create an instance.
 	 */
-	public function __construct($basePath = null)
+	public function __construct($pluginFile)
 	{
-		$this->app = new Application($basePath);
+		$this->pluginFile = $pluginFile;
+
+		$this->app = new Application(dirname($pluginFile));
+
+		$this->app->instance('plugin', $this);
 
 		add_action('init',         array($this, 'whitelistIpAddresses'));
 		add_action('widgets_init', array($this, 'registerWidgets'));
@@ -43,5 +52,27 @@ class Plugin
 	public function registerWidgets()
 	{
 		register_widget('Enlighten\WP\Widgets\TemplateWidget');
+	}
+
+	/**
+	 * Get the filesystem directory path relative to the plugin.
+	 *
+	 * @param string
+	 * @return string
+	 */
+	public function path($path = '')
+	{
+		return plugin_dir_path($this->pluginFile) . ltrim($path, DIRECTORY_SEPARATOR);
+	}
+
+	/**
+	 * Get the URL relative to the plugin.
+	 *
+	 * @param string
+	 * @return string
+	 */
+	public function url($path = '')
+	{
+		return plugin_dir_url($this->pluginFile) . ltrim($path, DIRECTORY_SEPARATOR);
 	}
 }
