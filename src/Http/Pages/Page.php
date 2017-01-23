@@ -3,6 +3,7 @@
 namespace Enlighten\Http\Pages;
 
 use Enlighten\Http\Controller;
+use Illuminate\Support\Str;
 
 abstract class Page extends Controller
 {
@@ -42,7 +43,7 @@ abstract class Page extends Controller
 		parent::__construct();
 
 		if (!$this->pageTitle) {
-			$this->menuTitle = $this->pageTitle;
+			$this->pageTitle = $this->menuTitle;
 		}
 
 		add_action('admin_menu', array($this, 'registerPage'));
@@ -83,7 +84,7 @@ abstract class Page extends Controller
 			return $this->slug;
 		}
 
-		$action = Str::slug(get_class($this));
+		$action = Str::slug(str_replace('\\','_',get_class($this)));
 
 		return sanitize_key($action);
 	}
