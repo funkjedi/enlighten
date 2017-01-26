@@ -133,6 +133,20 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
 	}
 
 	/**
+	 * Set the globally available instance of the container.
+	 *
+	 * @return static
+	 */
+	public static function getInstance()
+	{
+		if (!static::$instance) {
+			static::$instance = new static;
+		}
+
+		return static::$instance;
+	}
+
+	/**
 	 * Get the version number of the application.
 	 *
 	 * @return string
