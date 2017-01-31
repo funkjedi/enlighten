@@ -75,6 +75,7 @@ abstract class Page extends Controller
 		}
 
 		add_action('admin_menu', array($this, 'registerPage'));
+		add_action('admin_init', array($this, 'registerHandlers'), 1);
 		add_action('admin_init', array($this, 'registerSettings'));
 		add_action('admin_enqueue_scripts', array($this, 'adminEnqueueScripts'));
 	}
@@ -106,6 +107,14 @@ abstract class Page extends Controller
 				);
 			}
 		}
+	}
+
+	/**
+	 * Register handlers.
+	 */
+	public function registerHandlers()
+	{
+		//
 	}
 
 	/**
