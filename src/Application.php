@@ -8,6 +8,7 @@ use Enlighten\Mail\Mailer;
 use Enlighten\View\Factory;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Foundation\Application as ApplicationContract;
+use Illuminate\Events\Dispatcher;
 use Illuminate\Events\EventServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Facade;
@@ -17,7 +18,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use WeDevs\ORM\Eloquent\Database;
+use WeDevs\ORM\Eloquent\Manager as DatabaseManager;
 
 class Application extends Container implements ApplicationContract, HttpKernelInterface
 {
@@ -101,7 +102,16 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
 			'Enlighten\Http\Kernel'
 		);
 
-		$this->instance('db', Database::instance());
+		$this->singleton('events', function($app){
+			return new Dispatcher;
+		});
+
+		$this->singleton('db', function($app){
+			$manager = new DatabaseManager;
+			$manager->setAsGlobal();
+			$manager->bootEloquent();
+			return $manager;
+		});
 
 		$this->singleton('kernel', 'Illuminate\Contracts\Http\Kernel');
 

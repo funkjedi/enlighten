@@ -75,4 +75,12 @@ class Plugin
 	{
 		return plugin_dir_url($this->pluginFile) . ltrim($path, DIRECTORY_SEPARATOR);
 	}
+
+	/**
+	 * @return \Enlighten\Application
+	 */
+	public function getApplication()
+	{
+		return $this->app;
+	}
 }
