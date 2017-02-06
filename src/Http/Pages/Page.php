@@ -148,7 +148,10 @@ abstract class Page extends Controller
 	/**
 	 * Render the page.
 	 */
-	abstract public function handle();
+	public function handle()
+	{
+		//
+	}
 
 	/**
 	 * Render the page.
