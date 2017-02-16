@@ -3,9 +3,6 @@
 namespace Enlighten;
 
 use Enlighten\Http\Kernel;
-use Enlighten\Http\Router;
-use Enlighten\Mail\Mailer;
-use Enlighten\View\Factory;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Foundation\Application as ApplicationContract;
 use Illuminate\Events\Dispatcher;
@@ -18,7 +15,6 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use WeDevs\ORM\Eloquent\Manager as DatabaseManager;
 
 class Application extends Container implements ApplicationContract, HttpKernelInterface
 {
@@ -27,7 +23,7 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
 	 *
 	 * @var string
 	 */
-	const VERSION = '1.0.0';
+	const VERSION = '1.0.1';
 
 	/**
 	 * The base path for the Laravel installation.
@@ -102,28 +98,15 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
 			'Enlighten\Http\Kernel'
 		);
 
-		$this->singleton('events', function($app){
-			return new Dispatcher;
-		});
-
-		$this->singleton('db', function($app){
-			$manager = new DatabaseManager;
-			$manager->setAsGlobal();
-			$manager->bootEloquent();
-			return $manager;
-		});
+		$this->singleton('db', 'Enlighten\Database\Manager');
 
 		$this->singleton('kernel', 'Illuminate\Contracts\Http\Kernel');
 
-		$this->singleton('mailer', function($app){
-			return new Mailer;
-		});
+		$this->singleton('mailer', 'Enlighten\Mail\Mailer');
 
 		$this->instance('request', Request::capture());
 
-		$this->singleton('router', function($app){
-			return new Router($app);
-		});
+		$this->singleton('router', 'Enlighten\Http\Router');
 
 		$this->singleton('session', function($app){
 			$session = new Session;
@@ -131,9 +114,7 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
 			return $session;
 		});
 
-		$this->singleton('view', function($app){
-			return new Factory;
-		});
+		$this->singleton('view', 'Enlighten\View\Factory');
 
 		$this->registerCoreContainerAliases();
 
@@ -177,6 +158,7 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
 
 		$this->instance('app', $this);
 
+		$this->instance('Enlighten\Application', $this);
 		$this->instance('Illuminate\Container\Container', $this);
 	}
 

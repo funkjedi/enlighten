@@ -10,7 +10,6 @@ use Swift_Transport;
 
 class LogTransport implements Swift_Transport
 {
-
 	/**
 	 * The plug-ins registered with the transport.
 	 *
@@ -123,5 +122,4 @@ class LogTransport implements Swift_Transport
 			}
 		}
 	}
-
 }

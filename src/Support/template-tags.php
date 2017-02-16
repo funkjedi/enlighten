@@ -8,7 +8,7 @@ endif;
 
 if (!function_exists('get_theme_dir')):
 	function get_theme_dir($path){
-		return get_stylesheet_directory() . '/' . ltrim($path, '/');
+		return trans(get_stylesheet_directory() . '/' . ltrim($path, '/'));
 	}
 endif;
 
