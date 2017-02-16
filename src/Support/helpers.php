@@ -19,6 +19,16 @@ function enlighten_register_ajax(array $actions){
 	enlighten('kernel')->registerActions($actions);
 }
 
+function enlighten_schema($filename){
+	global $wpdb;
+	if (get_option('enlighten-schema-revision') !== sha1_file($filename)) {
+		require_once ABSPATH.'wp-admin/includes/upgrade.php';
+		$charset_collate = $wpdb->get_charset_collate();
+		include $filename;
+		update_option('enlighten-schema-revision', sha1_file($filename), true);
+	}
+}
+
 function enlighten_view($name, array $data = array()){
 	return enlighten('view')->make($name, $data);
 }
