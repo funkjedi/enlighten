@@ -5,6 +5,7 @@ namespace Enlighten\Http;
 use BadMethodCallException;
 use Enlighten\Application;
 use Enlighten\Http\Ajax\Action;
+use Exception;
 use Illuminate\Contracts\Http\Kernel as KernelContract;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
