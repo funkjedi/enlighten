@@ -181,7 +181,7 @@ class Controller
 	 */
 	public function error($content, $status = 400, array $headers = [])
 	{
-		if (is_a($content, 'Exception')) {
+		if (is_a($content, 'Exception') || is_a($content, 'Throwable')) {
 			$content = $content->getMessage();
 		}
 
