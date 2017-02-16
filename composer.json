@@ -13,7 +13,8 @@
     "autoload": {
         "files": [
             "src/Support/helpers.php",
-            "src/Support/template-tags.php"
+            "src/Support/template-tags.php",
+            "bootstrap.php"
         ],
         "psr-4": {
             "Enlighten\\": "src/"

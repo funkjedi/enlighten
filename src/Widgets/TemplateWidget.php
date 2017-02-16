@@ -1,6 +1,6 @@
 <?php
 
-namespace Enlighten\WP\Widgets;
+namespace Enlighten\Widgets;
 
 use WP_Widget;
 
