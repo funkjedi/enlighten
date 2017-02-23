@@ -98,15 +98,21 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
 			'Enlighten\Http\Kernel'
 		);
 
-		$this->singleton('db', 'Enlighten\Database\Manager');
-
 		$this->singleton('kernel', 'Illuminate\Contracts\Http\Kernel');
 
-		$this->singleton('mailer', 'Enlighten\Mail\Mailer');
+		$this->singleton('db', function($app){
+			return new \Enlighten\Database\Manager($app);
+		});
+
+		$this->singleton('mailer', function(){
+			return new \Enlighten\Mail\Mailer;
+		});
 
 		$this->instance('request', Request::capture());
 
-		$this->singleton('router', 'Enlighten\Http\Router');
+		$this->singleton('router', function($app){
+			return new \Enlighten\Http\Router($app);
+		});
 
 		$this->singleton('session', function($app){
 			$session = new Session;
@@ -114,7 +120,9 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
 			return $session;
 		});
 
-		$this->singleton('view', 'Enlighten\View\Factory');
+		$this->singleton('view', function(){
+			return new \Enlighten\View\Factory;
+		});
 
 		$this->registerCoreContainerAliases();
 
