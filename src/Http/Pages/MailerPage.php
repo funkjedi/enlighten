@@ -1,6 +1,6 @@
 <?php
 
-namespace Enlighten\Pages;
+namespace Enlighten\Http\Pages;
 
 class MailerPage extends Page
 {
