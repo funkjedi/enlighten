@@ -4,7 +4,7 @@ namespace Enlighten\Database;
 
 use Illuminate\Database\Capsule\Manager as BaseManager;
 use Illuminate\Events\Dispatcher;
-use Illuminate\Support\Container;
+use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Facade;
 
 class Manager extends BaseManager
