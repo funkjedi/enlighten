@@ -1,6 +1,6 @@
 <?php
 
-namespace Enlighten\Foundation\Mail;
+namespace Enlighten\Mail\Transport;
 
 use Swift_Events_EventListener;
 use Swift_Events_SendEvent;

@@ -2,8 +2,8 @@
 
 namespace Enlighten\Mail;
 
-use Enlighten\Foundation\Mail\LogTransport;
-use Enlighten\Foundation\View;
+use Enlighten\Mail\Transport\LogTransport;
+use Enlighten\View\View;
 use Exception;
 use Illuminate\Contracts\Mail\Mailer as MailerContract;
 use InvalidArgumentException;
@@ -34,7 +34,7 @@ class Mailer implements MailerContract
 	 * @param \Closure|null
 	 * @return int
 	 */
-	public function send($html, $data = array(), $callback = null)
+	public function send($html, array $data = array(), $callback = null)
 	{
 		if (is_callable($data)) {
 			$callback = $data;
@@ -43,7 +43,7 @@ class Mailer implements MailerContract
 
 		if (is_string($html)) {
 			try {
-				$html = new View($html, $data);
+				$html = enlighten('view')->make($html, $data);
 			}
 			catch (InvalidArgumentException $e) {}
 		}
@@ -52,7 +52,7 @@ class Mailer implements MailerContract
 			throw new InvalidArgumentException;
 		}
 
-		if (is_a($html, 'Enlighten\Foundation\View')) {
+		if (is_object($html) && $html instanceof View) {
 			$html = $html->render();
 		}
 
@@ -62,8 +62,10 @@ class Mailer implements MailerContract
 		$message = Swift_Message::newInstance();
 		$message->setBody($html, 'text/html');
 
+		$mailer = Swift_Mailer::newInstance($this->getSwiftTransport());
+
 		if ($callback) {
-			$callback($message);
+			$callback($message, $mailer);
 		}
 
 		// If in Test Mode the set the recipient to the Test Mode recipients
@@ -86,7 +88,6 @@ class Mailer implements MailerContract
 			);
 		}
 
-		$mailer = Swift_Mailer::newInstance($this->getSwiftTransport());
 		return $mailer->send($message);
 	}
 

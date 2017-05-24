@@ -40,7 +40,7 @@ class Kernel implements KernelContract
 	/**
 	 * Register handlers with Wordpress.
 	 *
-	 * @param \Enlighten\Foundation\Action
+	 * @param \Enlighten\Http\Ajax\Action
 	 */
 	public function registerAction(Action $action)
 	{
