@@ -31,6 +31,18 @@ class Controller
 		$this->request = $this->app['request'];
 	}
 
+    /**
+     * Execute an action on the controller.
+     *
+     * @param string
+     * @param array
+	 * @return mixed
+     */
+    public function callAction($method, $parameters)
+    {
+        return call_user_func_array([$this, $method], $parameters);
+    }
+
 	/**
 	 * Get an instance of the current request or an input item from the request.
 	 *

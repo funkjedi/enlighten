@@ -18,13 +18,6 @@ abstract class Action extends Controller
 	protected $action;
 
 	/**
-	 * Handle an ajax request.
-	 *
-	 * @return void
-	 */
-	abstract public function handle();
-
-	/**
 	 * Whether this action is public or only for authenticated users.
 	 *
 	 * @return boolean

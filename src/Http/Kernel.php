@@ -17,6 +17,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Kernel implements KernelContract
 {
+	use RouteDependencyResolverTrait;
+
 	/**
 	 * The application implementation.
 	 *
@@ -107,10 +109,10 @@ class Kernel implements KernelContract
 				throw new NotFoundHttpException;
 			}
 
-			$controller = 'App\\Http\\Controllers\\'.array_shift($params);
+			$controller = array_shift($params);
 
-			if (! class_exists($controller)) {
-				throw new NotFoundHttpException;
+			if ($controller[0] !== '\\') {
+				$controller = 'App\\Http\\Controllers\\'.$controller;
 			}
 
 			$action = array_shift($params);
@@ -120,7 +122,7 @@ class Kernel implements KernelContract
 			}
 
 			$this->bootstrap();
-			$response = call_user_func_array([$this->app->make($controller), $action], $params);
+			$response = $this->call($this->app->make($controller), $action, $params);
 		}
 		catch (ModelNotFoundException $e) {
 			$response = $this->respondWith404();
@@ -146,7 +148,7 @@ class Kernel implements KernelContract
 	{
 		try {
 			$this->bootstrap();
-			$response = $action->handle();
+			$response = $this->call($action, 'handle');
 		}
 		catch (ModelNotFoundException $e) {
 			$response = $this->respondWith404();
@@ -160,6 +162,27 @@ class Kernel implements KernelContract
 
 		return $this->prepareResponse($request, $response);
 	}
+
+    /**
+     * Call the given controller instance method.
+     *
+     * @param \Enlighten\Http\Controller
+     * @param string
+     * @param array
+     * @return mixed
+     */
+    protected function call($instance, $method, array $parameters = [])
+    {
+        $parameters = array_filter($parameters, function($parameter) {
+            return !is_null($parameter);
+        });
+
+        $parameters = $this->resolveClassMethodDependencies(
+            $parameters, $instance, $method
+		);
+
+        return $instance->callAction($method, $parameters);
+    }
 
 	/**
 	 * Handle an incoming AJAX request.
